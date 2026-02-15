@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1.1",
+    "category": "infrastructure",
+    "description": "Create project structure and dependencies (LangChain, FastAPI, database drivers)",
+    "priority": "P0",
+    "phase": 1,
+    "passes": false
+  },
+  {
+    "id": "1.2",
+    "category": "infrastructure",
+    "description": "Set up logging and error handling infrastructure",
+    "priority": "P0",
+    "phase": 1,
+    "passes": false
+  },
+  {
+    "id": "1.3",
+    "category": "infrastructure",
+    "description": "Create config management (env vars, settings)",
+    "priority": "P0",
+    "phase": 1,
+    "passes": false
+  },
+  {
+    "id": "2.1",
+    "category": "database",
+    "description": "Implement database connection layer (PostgreSQL, MySQL, SQLite)",
+    "priority": "P0",
+    "phase": 2,
+    "passes": false
+  },
+  {
+    "id": "2.2",
+    "category": "database",
+    "description": "Create schema introspection utilities",
+    "priority": "P0",
+    "phase": 2,
+    "passes": false
+  },
+  {
+    "id": "3.1",
+    "category": "llm",
+    "description": "Implement LLM provider abstraction (OpenAI, Anthropic, local)",
+    "priority": "P0",
+    "phase": 3,
+    "passes": false
+  },
+  {
+    "id": "3.2",
+    "category": "llm",
+    "description": "Create prompt templates for SQL generation",
+    "priority": "P0",
+    "phase": 3,
+    "passes": false
+  },
+  {
+    "id": "4.1",
+    "category": "core",
+    "description": "Implement schema understanding module",
+    "priority": "P0",
+    "phase": 4,
+    "passes": false
+  },
+  {
+    "id": "4.2",
+    "category": "core",
+    "description": "Implement SQL query generation from natural language",
+    "priority": "P0",
+    "phase": 4,
+    "passes": false
+  },
+  {
+    "id": "4.3",
+    "category": "core",
+    "description": "Implement result interpretation and formatting",
+    "priority": "P0",
+    "phase": 4,
+    "passes": false
+  },
+  {
+    "id": "5.1",
+    "category": "api",
+    "description": "Create FastAPI REST endpoints",
+    "priority": "P0",
+    "phase": 5,
+    "passes": false
+  },
+  {
+    "id": "5.2",
+    "category": "api",
+    "description": "Add request validation and error responses",
+    "priority": "P0",
+    "phase": 5,
+    "passes": false
+  },
+  {
+    "id": "5.3",
+    "category": "api",
+    "description": "Add health check and monitoring endpoints",
+    "priority": "P1",
+    "phase": 5,
+    "passes": false
+  },
+  {
+    "id": "6.1",
+    "category": "testing",
+    "description": "Write unit tests for core modules",
+    "priority": "P1",
+    "phase": 6,
+    "passes": false
+  },
+  {
+    "id": "6.2",
+    "category": "testing",
+    "description": "Write integration tests for API endpoints",
+    "priority": "P1",
+    "phase": 6,
+    "passes": false
+  }
+]
