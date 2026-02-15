@@ -32,24 +32,24 @@
       ],
       "passes": true
     },
-    {
-      "id": 3,
-      "title": "Phase 2: Schema 文档生成",
-      "description": "生成 LLM 可读的 Schema 文档 + 采样数据",
-      "module": "schema",
-      "phase": 2,
-      "steps": [
-        "实现 SchemaDocGenerator",
-        "添加采样数据功能",
-        "添加单元测试"
-      ],
-      "files": [
-        "src/schema/schema_doc_generator.py",
-        "src/schema/schema_extractor.py",
-        "tests/test_schema_phase2.py"
-      ],
-      "passes": false
-    },
+      {
+        "id": 3,
+        "title": "Phase 2: Schema 文档生成",
+        "description": "生成 LLM 可读的 Schema 文档 + 采样数据",
+        "module": "schema",
+        "phase": 2,
+        "steps": [
+          "实现 SchemaDocGenerator",
+          "添加采样数据功能",
+          "添加单元测试"
+        ],
+        "files": [
+          "src/schema/schema_doc_generator.py",
+          "src/schema/schema_extractor.py",
+          "tests/test_schema_phase2.py"
+        ],
+        "passes": true
+      },
     {
       "id": 4,
       "title": "Phase 3: 语义增强",

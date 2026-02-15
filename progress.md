@@ -1,5 +1,27 @@
 # Progress Log
 
+## 2026-02-15 - Phase 2: Schema 文档生成
+
+### What was done:
+- Created SchemaDocGenerator class in src/schema/schema_doc_generator.py
+- Implemented sample data extraction using SQLAlchemy engine
+- Implemented row count functionality
+- Created Markdown format generation for schema documentation
+- Created JSON format generation for schema documentation
+- Added 6 unit tests in tests/test_schema_phase2.py
+
+### Testing:
+- Ran `python -m pytest tests/test_schema_phase2.py -v`
+- All 6 tests passed: test_schema_doc_generator_init, test_generate_table_doc, test_sample_data, test_generate_full_doc, test_generate_json_doc, test_custom_sample_rows
+- Also verified Phase 1 tests still pass
+
+### Notes:
+- Used SQLAlchemy engine directly instead of db.run() which returns string representation
+- Supports custom sample row count via constructor parameter
+- Phase 2 MVP complete
+
+---
+
 ## 2026-02-15 - Phase 1: Schema 核心基础
 
 ### What was done:
