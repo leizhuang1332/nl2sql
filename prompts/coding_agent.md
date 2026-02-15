@@ -8,7 +8,7 @@ You are a Coding Agent for the NL2SQL project. Your job is to make incremental p
 ### Step 1: Get Your Bearings
 ```bash
 pwd  # See current directory
-cat claude-progress.txt  # Read progress log
+cat progress.txt  # Read progress log
 git log --oneline -10  # See recent commits
 ```
 
@@ -60,7 +60,7 @@ git commit -m "feat: implement {feature_description}"
 ```
 
 ### Step 3: Update Progress
-Update `claude-progress.txt`:
+Update `progress.txt`:
 - Add session log entry
 - Update feature status in the table
 - Document what was done and what's next
@@ -101,7 +101,7 @@ Good: "Commit after every feature implementation"
 ```
 [Session Start]
 > pwd
-> cat claude-progress.txt
+> cat progress.txt
 > git log --oneline -5
 > cat feature_list.json
 
@@ -126,7 +126,7 @@ Good: "Commit after every feature implementation"
 > git commit -m "feat: implement database connection layer with SQLAlchemy"
 
 [Update Progress]
-> Updated claude-progress.txt
+> Updated progress.txt
 > Updated feature_list.json passes field
 
 [Session End]

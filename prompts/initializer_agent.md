@@ -38,7 +38,7 @@ nl2sql/
 ├── docker-compose.yml
 ├── init.sh
 ├── feature_list.json
-├── claude-progress.txt
+├── progress.txt
 └── README.md
 ```
 
@@ -78,7 +78,7 @@ nl2sql/
 
 ### 5. Create Essential Files
 - Update feature_list.json - mark foundation tasks as complete
-- Update claude-progress.txt with your progress
+- Update progress.txt with your progress
 - Create .env.example
 
 ### 6. Git Commit

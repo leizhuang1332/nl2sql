@@ -22,7 +22,7 @@
 1. 初始化 Git 仓库
 2. 创建 .gitignore
 3. 创建 feature_list.json (35个功能点)
-4. 创建 claude-progress.txt 模板
+4. 创建 progress.txt 模板
 5. 创建项目目录结构
 
 **下一步**:
