@@ -2,6 +2,10 @@
 
 ---
 
+**技术架构参考**: [docs/technical-architecture.md](docs/technical-architecture.md) - LangChain 1.2.x 技术栈与 6 大核心模块设计
+
+---
+
 ## MANDATORY: Agent Workflow
 
 Every new agent session MUST follow this workflow:
