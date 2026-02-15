@@ -1,0 +1,16 @@
+{
+  "tables": {
+    "users": "用户表，存储系统用户信息",
+    "orders": "订单表，存储用户订单信息"
+  },
+  "fields": {
+    "users.id": "用户唯一标识符",
+    "users.name": "用户姓名",
+    "users.email": "用户邮箱地址",
+    "users.age": "用户年龄",
+    "orders.id": "订单唯一标识符",
+    "orders.user_id": "下单用户的外键ID",
+    "orders.amount": "订单金额",
+    "orders.created_at": "订单创建时间"
+  }
+}

@@ -1,5 +1,27 @@
 # Progress Log
 
+## 2026-02-15 - Phase 3: 语义增强
+
+### What was done:
+- Created SchemaEnhancer class in src/schema/schema_enhancer.py
+- Implemented config file loading (JSON format)
+- Added field and table description management
+- Created config/field_descriptions.json template
+- Added 8 unit tests in tests/test_schema_phase3.py
+
+### Testing:
+- Ran `python -m pytest tests/test_schema_phase3.py -v`
+- All 8 tests passed
+- All 17 schema tests pass (Phase 1-3)
+
+### Notes:
+- Supports adding field and table descriptions programmatically
+- Can load descriptions from JSON config file
+- Can save current descriptions to config file
+- Phase 3 MVP complete
+
+---
+
 ## 2026-02-15 - Phase 2: Schema 文档生成
 
 ### What was done:

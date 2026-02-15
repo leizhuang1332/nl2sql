@@ -50,25 +50,25 @@
         ],
         "passes": true
       },
-    {
-      "id": 4,
-      "title": "Phase 3: 语义增强",
-      "description": "字段注释/业务含义注入，解决语义歧义",
-      "module": "schema",
-      "phase": 3,
-      "steps": [
-        "实现 SchemaEnhancer",
-        "实现配置文件加载",
-        "创建字段描述配置模板",
-        "添加单元测试"
-      ],
-      "files": [
-        "src/schema/schema_enhancer.py",
-        "config/field_descriptions.json",
-        "tests/test_schema_phase3.py"
-      ],
-      "passes": false
-    },
+      {
+        "id": 4,
+        "title": "Phase 3: 语义增强",
+        "description": "字段注释/业务含义注入，解决语义歧义",
+        "module": "schema",
+        "phase": 3,
+        "steps": [
+          "实现 SchemaEnhancer",
+          "实现配置文件加载",
+          "创建字段描述配置模板",
+          "添加单元测试"
+        ],
+        "files": [
+          "src/schema/schema_enhancer.py",
+          "config/field_descriptions.json",
+          "tests/test_schema_phase3.py"
+        ],
+        "passes": true
+      },
     {
       "id": 5,
       "title": "Phase 4: 关系提取",
