@@ -156,7 +156,7 @@
         "src/generation/prompts.py",
         "tests/test_generation_phase2.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 9,

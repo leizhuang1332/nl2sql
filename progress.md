@@ -1,5 +1,33 @@
 # Progress Log
 
+## 2026-02-15 - Generation Phase 2: Few-shot管理 + Prompt模板
+
+### What was done:
+- Created FewShotManager class in src/generation/few_shot_manager.py
+  - add_example() for adding question-SQL pairs
+  - get_prompt_with_examples() for generating few-shot prompts
+  - load_examples_from_file() / save_examples_to_file() for JSON persistence
+  - clear_examples() and get_example_count() utilities
+- Created prompts.py with 4 template types:
+  - BASIC_TEMPLATE: Simple NL to SQL conversion
+  - DETAILED_TEMPLATE: Full-featured with requirements
+  - CONTEXT_TEMPLATE: With conversation context
+  - COMPLEX_TEMPLATE: For complex query scenarios
+- Updated src/generation/__init__.py exports
+- Created tests/test_generation_phase2.py with 10 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_generation_phase2.py -v`
+- All 10 tests passed
+
+### Notes:
+- FewShotManager uses LangChain's FewShotPromptTemplate
+- Supports configurable example count in prompts
+- All templates are simple string templates ready for ChatPromptTemplate
+- Phase 2 MVP complete
+
+---
+
 ## 2026-02-15 - Generation Phase 1: LLM工厂 + SQL生成器
 
 ### What was done:
