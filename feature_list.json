@@ -113,10 +113,9 @@
       ],
       "files": [
         "src/schema/database_connector.py",
-        "src/schema/database_factory.py",
         "tests/test_schema_phase5.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 7,

@@ -1,5 +1,33 @@
 # Progress Log
 
+## 2026-02-15 - Phase 5: 多数据源支持
+
+### What was done:
+- Extended DatabaseConnector class in src/schema/database_connector.py
+  - Added db_type parameter to support sqlite/mysql/postgresql/oracle
+  - Added _build_uri() method for connection string generation
+  - Added _connection_params for database-specific settings
+- Created DatabaseConnectorFactory class with factory methods:
+  - create() generic factory method
+  - create_sqlite(), create_mysql(), create_postgresql(), create_oracle() convenience methods
+- Updated src/schema/__init__.py exports (if needed)
+- Created tests/test_schema_phase5.py with 10 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_schema_phase5.py -v`
+- All 10 tests passed
+- Verified all 69 tests still pass (schema phases 1-5 + generation phases 1-3)
+
+### Notes:
+- SQLite: uses sqlite:/// prefix
+- MySQL: uses mysql+pymysql driver
+- PostgreSQL: uses postgresql+psycopg2 driver
+- Oracle: uses oracle+oracledb driver
+- All existing tests remain backward compatible
+- Phase 5 MVP complete
+
+---
+
 ## 2026-02-15 - Generation Phase 3: SQL验证器
 
 ### What was done:
