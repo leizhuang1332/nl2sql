@@ -7,6 +7,7 @@
       "title": "项目初始化",
       "description": "项目初始化",
       "source": null,
+      "priority": "p0",
       "steps": [
         "创建feature_list.json",
         "创建init.sh",
@@ -21,6 +22,7 @@
       "title": "Phase 1: Schema 核心基础",
       "description": "实现 SQLite 数据库连接 + 基本 Schema 提取",
       "source": null,
+      "priority": "p0",
       "module": "schema",
       "phase": 1,
       "steps": [
@@ -40,6 +42,7 @@
       "title": "Phase 2: Schema 文档生成",
       "description": "生成 LLM 可读的 Schema 文档 + 采样数据",
       "source": null,
+      "priority": "p1",
       "module": "schema",
       "phase": 2,
       "steps": [
@@ -59,6 +62,7 @@
       "title": "Phase 3: 语义增强",
       "description": "字段注释/业务含义注入，解决语义歧义",
       "source": null,
+      "priority": "p1",
       "module": "schema",
       "phase": 3,
       "steps": [
@@ -79,6 +83,7 @@
       "title": "Phase 4: 关系提取",
       "description": "提取表之间的主键外键关系",
       "source": null,
+      "priority": "p2",
       "module": "schema",
       "phase": 4,
       "steps": [
@@ -97,6 +102,7 @@
       "title": "Phase 5: 多数据源支持",
       "description": "支持 MySQL/PostgreSQL/Oracle，扩展为工厂模式",
       "source": null,
+      "priority": "p3",
       "module": "schema",
       "phase": 5,
       "steps": [
@@ -117,6 +123,7 @@
       "title": "Generation Phase 1: LLM工厂 + SQL生成器",
       "description": "实现 LLM 工厂 (支持 MiniMax M2.5) 和 SQL 生成器基础功能",
       "source": "docs/core-modules-2-phases.md",
+      "priority": "p0",
       "module": "generation",
       "phase": 1,
       "steps": [
@@ -136,6 +143,7 @@
       "title": "Generation Phase 2: Few-shot管理 + Prompt模板",
       "description": "实现 Few-shot 示例管理和多种 Prompt 模板",
       "source": "docs/core-modules-2-phases.md",
+      "priority": "p1",
       "module": "generation",
       "phase": 2,
       "steps": [
@@ -155,6 +163,7 @@
       "title": "Generation Phase 3: SQL验证器",
       "description": "实现 SQL 验证功能，防止危险操作",
       "source": "docs/core-modules-2-phases.md",
+      "priority": "p2",
       "module": "generation",
       "phase": 3,
       "steps": [
