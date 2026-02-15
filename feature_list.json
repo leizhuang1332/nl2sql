@@ -6,18 +6,21 @@
       "id": 1,
       "title": "项目初始化",
       "description": "项目初始化",
+      "source": null,
       "steps": [
         "创建feature_list.json",
         "创建init.sh",
         "创建progress.md",
         "创建AGENTS.md"
       ],
+      "files": [],
       "passes": true
     },
     {
       "id": 2,
       "title": "Phase 1: Schema 核心基础",
       "description": "实现 SQLite 数据库连接 + 基本 Schema 提取",
+      "source": null,
       "module": "schema",
       "phase": 1,
       "steps": [
@@ -32,64 +35,68 @@
       ],
       "passes": true
     },
-      {
-        "id": 3,
-        "title": "Phase 2: Schema 文档生成",
-        "description": "生成 LLM 可读的 Schema 文档 + 采样数据",
-        "module": "schema",
-        "phase": 2,
-        "steps": [
-          "实现 SchemaDocGenerator",
-          "添加采样数据功能",
-          "添加单元测试"
-        ],
-        "files": [
-          "src/schema/schema_doc_generator.py",
-          "src/schema/schema_extractor.py",
-          "tests/test_schema_phase2.py"
-        ],
-        "passes": true
-      },
-      {
-        "id": 4,
-        "title": "Phase 3: 语义增强",
-        "description": "字段注释/业务含义注入，解决语义歧义",
-        "module": "schema",
-        "phase": 3,
-        "steps": [
-          "实现 SchemaEnhancer",
-          "实现配置文件加载",
-          "创建字段描述配置模板",
-          "添加单元测试"
-        ],
-        "files": [
-          "src/schema/schema_enhancer.py",
-          "config/field_descriptions.json",
-          "tests/test_schema_phase3.py"
-        ],
-        "passes": true
-      },
-      {
-        "id": 5,
-        "title": "Phase 4: 关系提取",
-        "description": "提取表之间的主键外键关系",
-        "module": "schema",
-        "phase": 4,
-        "steps": [
-          "实现 RelationshipExtractor",
-          "支持手动配置关系",
-          "添加单元测试"
-        ],
-        "files": [
-          "src/schema/relationship_extractor.py",
-          "tests/test_schema_phase4.py"
-        ],
-        "passes": true
-      },
+    {
+      "id": 3,
+      "title": "Phase 2: Schema 文档生成",
+      "description": "生成 LLM 可读的 Schema 文档 + 采样数据",
+      "source": null,
+      "module": "schema",
+      "phase": 2,
+      "steps": [
+        "实现 SchemaDocGenerator",
+        "添加采样数据功能",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/schema/schema_doc_generator.py",
+        "src/schema/schema_extractor.py",
+        "tests/test_schema_phase2.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 4,
+      "title": "Phase 3: 语义增强",
+      "description": "字段注释/业务含义注入，解决语义歧义",
+      "source": null,
+      "module": "schema",
+      "phase": 3,
+      "steps": [
+        "实现 SchemaEnhancer",
+        "实现配置文件加载",
+        "创建字段描述配置模板",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/schema/schema_enhancer.py",
+        "config/field_descriptions.json",
+        "tests/test_schema_phase3.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 5,
+      "title": "Phase 4: 关系提取",
+      "description": "提取表之间的主键外键关系",
+      "source": null,
+      "module": "schema",
+      "phase": 4,
+      "steps": [
+        "实现 RelationshipExtractor",
+        "支持手动配置关系",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/schema/relationship_extractor.py",
+        "tests/test_schema_phase4.py"
+      ],
+      "passes": true
+    },
     {
       "id": 6,
       "title": "Phase 5: 多数据源支持",
       "description": "支持 MySQL/PostgreSQL/Oracle，扩展为工厂模式",
+      "source": null,
       "module": "schema",
       "phase": 5,
       "steps": [
@@ -102,6 +109,61 @@
         "src/schema/database_connector.py",
         "src/schema/database_factory.py",
         "tests/test_schema_phase5.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 7,
+      "title": "Generation Phase 1: LLM工厂 + SQL生成器",
+      "description": "实现 LLM 工厂 (支持 MiniMax M2.5) 和 SQL 生成器基础功能",
+      "source": "docs/core-modules-2-phases.md",
+      "module": "generation",
+      "phase": 1,
+      "steps": [
+        "实现 LLMFactory (支持 minimax/openai/anthropic/ollama/custom)",
+        "实现 SQLGenerator 基础功能",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/generation/llm_factory.py",
+        "src/generation/sql_generator.py",
+        "tests/test_generation_phase1.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 8,
+      "title": "Generation Phase 2: Few-shot管理 + Prompt模板",
+      "description": "实现 Few-shot 示例管理和多种 Prompt 模板",
+      "source": "docs/core-modules-2-phases.md",
+      "module": "generation",
+      "phase": 2,
+      "steps": [
+        "实现 FewShotManager 示例管理",
+        "实现 prompts.py 模板集合",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/generation/few_shot_manager.py",
+        "src/generation/prompts.py",
+        "tests/test_generation_phase2.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 9,
+      "title": "Generation Phase 3: SQL验证器",
+      "description": "实现 SQL 验证功能，防止危险操作",
+      "source": "docs/core-modules-2-phases.md",
+      "module": "generation",
+      "phase": 3,
+      "steps": [
+        "实现 SQLValidator 验证功能",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/generation/sql_validator.py",
+        "tests/test_generation_phase3.py"
       ],
       "passes": false
     }

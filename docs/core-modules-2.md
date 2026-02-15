@@ -1,5 +1,44 @@
 # 模块二：SQL 生成模块 - 详细实现计划
 
+## 2.0 MVP 规范
+
+### 2.0.1 LLM 选择
+
+**MVP 使用模型**: MiniMax M2.5
+
+### 2.0.2 LLM 兼容性设计
+
+本模块设计为兼容任意符合 **OpenAI风格** 和 **Anthropic风格** 的 LLM：
+
+| 风格 | 接口特征 | 兼容模型示例 |
+|------|----------|-------------|
+| **OpenAI 风格** | `chat.completions.create` + `ChatMessage` | MiniMax, 智谱, 阿里, 腾讯, OpenAI 等 |
+| **Anthropic 风格** | `messages.create` + `Message` | Claude, Anthropic 等 |
+
+**统一适配层设计**:
+```python
+# src/generation/llm_factory.py
+from typing import Any
+from langchain_core.language_models import BaseChatModel
+
+class LLMFactory:
+    @staticmethod
+    def create_llm(provider: str, **kwargs) -> BaseChatModel:
+        """
+        创建兼容的 LLM 实例
+        
+        支持的 provider:
+        - minimax: MiniMax M2.5 (MVP)
+        - openai: OpenAI GPT 系列
+        - anthropic: Anthropic Claude 系列
+        - 任意兼容 OpenAI API 的模型
+        - 任意兼容 Anthropic API 的模型
+        """
+        pass
+```
+
+---
+
 ## 2.1 模块目标
 
 将用户的自然语言问题转换为准确的 SQL 查询语句，核心包括：
@@ -199,40 +238,97 @@ SQL:"""
 
 ### 2.3.1 多版本 LLM 支持
 
+**MVP 配置**:
+```python
+# MiniMax M2.5 配置示例
+llm = LLMFactory.create_llm(
+    provider="minimax",
+    model="MiniMax-M2.5",
+    api_key="your-api-key",
+    base_url="https://api.minimax.chat/v1",
+    temperature=0
+)
+```
+
+**通用配置** (兼容任意 OpenAI/Anthropic 风格 LLM):
 ```python
 # src/generation/llm_factory.py
-from typing import Dict, Any
+from typing import Any, Literal
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_community.chat_models import ChatOllama
 
 class LLMFactory:
-    """LLM 工厂类"""
+    """LLM 工厂类 - 支持任意 OpenAI/Anthropic 风格 LLM"""
+    
+    PROVIDERS = Literal["minimax", "openai", "anthropic", "ollama", "custom"]
     
     @staticmethod
-    def create_llm(provider: str, **kwargs) -> Any:
+    def create_llm(
+        provider: PROVIDER,
+        model: str = None,
+        api_key: str = None,
+        base_url: str = None,
+        temperature: float = 0,
+        **kwargs
+    ) -> Any:
         """创建 LLM 实例"""
-        providers = {
-            "openai": lambda: ChatOpenAI(
-                model=kwargs.get("model", "gpt-4"),
-                temperature=kwargs.get("temperature", 0),
-                api_key=kwargs.get("api_key")
-            ),
-            "anthropic": lambda: ChatAnthropic(
-                model=kwargs.get("model", "claude-3-opus"),
-                temperature=kwargs.get("temperature", 0),
-                api_key=kwargs.get("api_key")
-            ),
-            "ollama": lambda: ChatOllama(
-                model=kwargs.get("model", "llama2"),
-                temperature=kwargs.get("temperature", 0)
+        
+        if provider == "minimax":
+            # MVP 使用 MiniMax M2.5
+            return ChatOpenAI(
+                model=model or "MiniMax-M2.5",
+                api_key=api_key,
+                base_url=base_url or "https://api.minimax.chat/v1",
+                temperature=temperature,
+                **kwargs
             )
-        }
         
-        if provider not in providers:
+        elif provider == "openai":
+            return ChatOpenAI(
+                model=model or "gpt-4",
+                api_key=api_key,
+                temperature=temperature,
+                **kwargs
+            )
+        
+        elif provider == "anthropic":
+            return ChatAnthropic(
+                model=model or "claude-3-opus-20240229",
+                api_key=api_key,
+                temperature=temperature,
+                **kwargs
+            )
+        
+        elif provider == "ollama":
+            return ChatOllama(
+                model=model or "llama2",
+                temperature=temperature,
+                **kwargs
+            )
+        
+        elif provider == "custom":
+            # 兼容任意 OpenAI 风格的 API
+            return ChatOpenAI(
+                model=model,
+                api_key=api_key,
+                base_url=base_url,
+                temperature=temperature,
+                **kwargs
+            )
+        
+        else:
             raise ValueError(f"不支持的 LLM 提供商: {provider}")
-        
-        return providers[provider]()
+    
+    @staticmethod
+    def is_openai_compatible(provider: str) -> bool:
+        """检查是否兼容 OpenAI 风格"""
+        return provider in ["minimax", "openai", "ollama", "custom"]
+    
+    @staticmethod
+    def is_anthropic_compatible(provider: str) -> bool:
+        """检查是否兼容 Anthropic 风格"""
+        return provider == "anthropic"
 ```
 
 ### 2.3.2 SQL 验证器
@@ -277,23 +373,28 @@ src/
 │   ├── sql_generator.py       # SQL 生成器主类
 │   ├── few_shot_manager.py    # Few-shot 管理
 │   ├── prompts.py              # Prompt 模板集合
-│   ├── llm_factory.py         # LLM 工厂
-│   └── sql_validator.py        # SQL 验证
+│   ├── llm_factory.py         # LLM 工厂 (MVP: MiniMax M2.5)
+│   └── sql_validator.py       # SQL 验证
 ```
+
+**MVP 依赖**:
+- `langchain-openai` - 用于 MiniMax 等 OpenAI 兼容模型
 
 ---
 
 ## 2.5 实现步骤
 
-| 步骤 | 任务 | 优先级 |
-|------|------|--------|
-| 1 | 实现 LLMFactory 支持多提供商 | P0 |
-| 2 | 实现 SQLGenerator 基础功能 | P0 |
-| 3 | 实现 FewShotManager 示例管理 | P1 |
-| 4 | 添加多种 Prompt 模板 | P1 |
-| 5 | 实现 SQLValidator 验证功能 | P1 |
-| 6 | 添加示例数据收集功能 | P2 |
-| 7 | 集成测试与优化 | P1 |
+| 步骤 | 任务 | 优先级 | 说明 |
+|------|------|--------|------|
+| 1 | 实现 LLMFactory 支持 MiniMax M2.5 (MVP) | P0 | 兼容 OpenAI 风格 |
+| 2 | 实现 SQLGenerator 基础功能 | P0 | |
+| 3 | 实现 FewShotManager 示例管理 | P1 | |
+| 4 | 添加多种 Prompt 模板 | P1 | |
+| 5 | 实现 SQLValidator 验证功能 | P1 | |
+| 6 | 添加示例数据收集功能 | P2 | |
+| 7 | 集成测试与优化 | P1 | |
+
+> **MVP 阶段**: 仅支持 MiniMax M2.5，其他 LLM 待后续扩展
 
 ---
 
