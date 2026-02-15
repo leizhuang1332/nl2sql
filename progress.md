@@ -1,5 +1,29 @@
 # Progress Log
 
+## 2026-02-15 - Generation Phase 3: SQL验证器
+
+### What was done:
+- Created SQLValidator class in src/generation/sql_validator.py
+  - validate() method: checks for dangerous keywords and SELECT-only
+  - validate_with_fix() method: attempts to remove dangerous keywords
+  - is_select_only() utility method
+  - contains_dangerous_keyword() utility method
+- Default dangerous keywords: DROP, DELETE, UPDATE, INSERT, ALTER, CREATE, TRUNCATE
+- Supports custom dangerous keywords via constructor
+- Updated src/generation/__init__.py exports
+- Created tests/test_generation_phase3.py with 19 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_generation_phase3.py -v`
+- All 19 tests passed
+
+### Notes:
+- Case-insensitive keyword detection
+- Validates SQL must start with SELECT
+- Phase 3 MVP complete
+
+---
+
 ## 2026-02-15 - Generation Phase 2: Few-shot管理 + Prompt模板
 
 ### What was done:
