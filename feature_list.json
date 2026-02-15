@@ -69,23 +69,23 @@
         ],
         "passes": true
       },
-    {
-      "id": 5,
-      "title": "Phase 4: 关系提取",
-      "description": "提取表之间的主键外键关系",
-      "module": "schema",
-      "phase": 4,
-      "steps": [
-        "实现 RelationshipExtractor",
-        "支持手动配置关系",
-        "添加单元测试"
-      ],
-      "files": [
-        "src/schema/relationship_extractor.py",
-        "tests/test_schema_phase4.py"
-      ],
-      "passes": false
-    },
+      {
+        "id": 5,
+        "title": "Phase 4: 关系提取",
+        "description": "提取表之间的主键外键关系",
+        "module": "schema",
+        "phase": 4,
+        "steps": [
+          "实现 RelationshipExtractor",
+          "支持手动配置关系",
+          "添加单元测试"
+        ],
+        "files": [
+          "src/schema/relationship_extractor.py",
+          "tests/test_schema_phase4.py"
+        ],
+        "passes": true
+      },
     {
       "id": 6,
       "title": "Phase 5: 多数据源支持",

@@ -1,5 +1,27 @@
 # Progress Log
 
+## 2026-02-15 - Phase 4: 关系提取
+
+### What was done:
+- Created RelationshipExtractor class in src/schema/relationship_extractor.py
+- Implemented foreign key extraction using SQLite PRAGMA
+- Added get_table_relationships for incoming/outgoing relationships
+- Added manual relationship support
+- Added merge_relationships for combining auto and manual relationships
+- Added 6 unit tests in tests/test_schema_phase4.py
+
+### Testing:
+- Ran `python -m pytest tests/test_schema_phase4.py -v`
+- All 6 tests passed
+- All 23 schema tests pass (Phase 1-4)
+
+### Notes:
+- Extracts foreign key relationships from SQLite databases
+- Supports manual relationship configuration
+- Phase 4 MVP complete
+
+---
+
 ## 2026-02-15 - Phase 3: 语义增强
 
 ### What was done:
