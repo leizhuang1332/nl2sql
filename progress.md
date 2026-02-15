@@ -1,5 +1,32 @@
 # Progress Log
 
+## 2026-02-15 - Generation Phase 1: LLM工厂 + SQL生成器
+
+### What was done:
+- Created src/generation/ directory with __init__.py
+- Implemented LLMFactory class in src/generation/llm_factory.py
+  - Supports minimax, openai, anthropic, ollama, custom providers
+  - create_llm() function for direct instantiation
+  - LLMFactory.create() static method
+- Implemented SQLGenerator class in src/generation/sql_generator.py
+  - Default prompt template for NL to SQL conversion
+  - _clean_sql() method for markdown code block removal
+  - generate() method for schema + question to SQL
+- Created tests/test_generation_phase1.py with 7 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_generation_phase1.py -v`
+- All 7 tests passed
+
+### Notes:
+- Uses ChatOpenAI for minimax/openai/custom providers
+- Uses ChatAnthropic for anthropic provider
+- Uses ChatOllama for ollama provider
+- Default temperature is 0 for deterministic output
+- Phase 1 MVP complete
+
+---
+
 ## 2026-02-15 - Phase 4: 关系提取
 
 ### What was done:

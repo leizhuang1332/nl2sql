@@ -102,7 +102,7 @@
       "title": "Phase 5: 多数据源支持",
       "description": "支持 MySQL/PostgreSQL/Oracle，扩展为工厂模式",
       "source": null,
-      "priority": "p3",
+      "priority": "p5",
       "module": "schema",
       "phase": 5,
       "steps": [
@@ -136,7 +136,7 @@
         "src/generation/sql_generator.py",
         "tests/test_generation_phase1.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 8,
