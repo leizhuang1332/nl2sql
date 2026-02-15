@@ -1,0 +1,37 @@
+# {{PROJECT_NAME}} - 进度日志
+
+## 项目信息
+- **项目名称**: {{PROJECT_NAME}}
+- **技术栈**: {{TECH_STACK}}
+- **目标**: {{PROJECT_GOAL}}
+
+## 当前状态
+- **阶段**: {{CURRENT_PHASE}}
+- **完成的功能**: {{COMPLETED_COUNT}}/{{TOTAL_COUNT}}
+- **当前会话**: {{AGENT_TYPE}}
+
+---
+
+## 会话日志
+
+### Session {{SESSION_NUM}} - {{DATE}}
+**Agent类型**: {{AGENT_TYPE}}
+**状态**: {{STATUS}}
+
+**完成的工作**:
+1. {{WORK_ITEM_1}}
+2. {{WORK_ITEM_2}}
+
+**下一步**:
+- {{NEXT_STEP}}
+
+---
+
+## 功能完成情况
+
+| Phase | 功能ID | 描述 | 状态 |
+|-------|--------|------|------|
+{{FEATURE_TABLE}}
+
+---
+*此文件由{{AGENT_TYPE}}创建，每会话更新*
