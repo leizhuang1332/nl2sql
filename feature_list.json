@@ -1,0 +1,18 @@
+{
+  "project": "nl2sql",
+  "description": "一个基于 Langchain 的 nl2sql 项目",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "项目初始化",
+      "description": "项目初始化",
+      "steps": [
+        "创建feature_list.json",
+        "创建init.sh",
+        "创建progress.md",
+        "创建AGENTS.md"
+      ],
+      "passes": true
+    }
+  ]
+}
