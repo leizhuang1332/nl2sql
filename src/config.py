@@ -10,8 +10,9 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o"
     
     # MiniMax
-    minimax_api_key: str = "sk-cp-ZVNwPbRA4EmhTNwSKqE3t30NGw5537tXYpshPkdc39nqJVm4IS7k2OUvzIDujufT_jIGTCHu2adxkBDgx5nu-SS66bI7Kfr0dRLlbhP_QYgtq0USVUgx3KQ"
+    minimax_api_key: str
     minimax_model: str = "MiniMax-M2.5"
+    minimax_base_url: str = "https://api.minimaxi.com/anthropic"
     
     # Database
     database_uri: str = "sqlite:///example.db"

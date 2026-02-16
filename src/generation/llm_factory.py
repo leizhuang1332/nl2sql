@@ -11,11 +11,12 @@ def create_llm(
     **kwargs: Any
 ) -> Any:
     if provider == "minimax":
-        return ChatOpenAI(
+        from langchain_anthropic import ChatAnthropic
+        return ChatAnthropic(
             model=model or "MiniMax-M2.5",
             api_key=api_key,
-            base_url=base_url or "https://api.minimax.chat/v1",
-            temperature=temperature,
+            base_url=base_url or "https://api.minimaxi.com/anthropic",
+            temperature=temperature if temperature > 0 else 1.0,
             **kwargs
         )
 
