@@ -438,6 +438,136 @@
         "tests/test_explanation_e2e.py"
       ],
       "passes": true
+    },
+    {
+      "id": 24,
+      "title": "Orchestrator Phase 1: 核心类型定义",
+      "description": "定义编排器所需的全部数据类型，包括查询状态、结果结构等",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p0",
+      "module": "orchestrator",
+      "phase": 1,
+      "steps": [
+        "实现 QueryStatus 枚举",
+        "实现 MappingResult 数据类",
+        "实现 SecurityResult 数据类",
+        "实现 ExecutionResult 数据类",
+        "实现 QueryResult 数据类",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/core/types.py",
+        "src/core/__init__.py",
+        "tests/test_core_types.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 25,
+      "title": "Orchestrator Phase 2: 编排器基础架构",
+      "description": "实现编排器主类框架，包括模块初始化和核心 ask 方法",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p0",
+      "module": "orchestrator",
+      "phase": 2,
+      "steps": [
+        "实现 NL2SQLOrchestrator 主类",
+        "实现 _init_modules 方法初始化6个模块",
+        "实现 ask 方法骨架",
+        "实现 get_table_names 方法",
+        "实现 get_schema 方法",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/core/orchestrator.py",
+        "tests/test_orchestrator_phase2.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 26,
+      "title": "Orchestrator Phase 3: 语义映射集成",
+      "description": "实现 _semantic_mapping 方法，将语义模块集成到编排流程",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p1",
+      "module": "orchestrator",
+      "phase": 3,
+      "steps": [
+        "实现 _semantic_mapping 方法",
+        "集成 SemanticMapper",
+        "集成 SemanticConfigManager",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/core/orchestrator.py",
+        "tests/test_orchestrator_phase3.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 27,
+      "title": "Orchestrator Phase 4: Schema + SQL生成 + 安全验证集成",
+      "description": "实现 Schema 准备、SQL 生成和安全验证方法",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p1",
+      "module": "orchestrator",
+      "phase": 4,
+      "steps": [
+        "实现 _prepare_schema 方法",
+        "实现 _generate_sql 方法",
+        "实现 _validate_security 方法",
+        "集成 SchemaGenerator、SQLGenerator、SecurityValidator",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/core/orchestrator.py",
+        "tests/test_orchestrator_phase4.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 28,
+      "title": "Orchestrator Phase 5: 执行与结果解释集成",
+      "description": "实现 SQL 执行和结果解释方法，完成完整流程",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p1",
+      "module": "orchestrator",
+      "phase": 5,
+      "steps": [
+        "实现 _execute_sql 方法",
+        "实现 _explain_result 方法",
+        "集成 QueryExecutor、ResultExplainer",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/core/orchestrator.py",
+        "tests/test_orchestrator_phase5.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 29,
+      "title": "Orchestrator Phase 6: 集成测试",
+      "description": "创建完整的端到端集成测试，验证6大模块协作",
+      "source": "docs/orchestrator-design-phases.md",
+      "priority": "p0",
+      "module": "orchestrator",
+      "phase": 6,
+      "steps": [
+        "创建测试数据库 Fixture",
+        "实现简单查询端到端测试",
+        "实现条件查询端到端测试",
+        "实现聚合查询端到端测试",
+        "实现关联查询端到端测试",
+        "实现安全拦截测试",
+        "实现执行错误处理测试"
+      ],
+      "files": [
+        "tests/conftest.py",
+        "tests/test_orchestrator_integration.py",
+        "tests/fixtures/questions.json"
+      ],
+      "passes": true
     }
   ]
 }

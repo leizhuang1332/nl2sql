@@ -1,5 +1,29 @@
 # Progress Log
 
+## 2026-02-16 - Orchestrator Phase 1: 核心类型定义
+
+### What was done:
+- Created src/core/ directory with __init__.py
+- Implemented types.py with all data types:
+  - QueryStatus enum: SUCCESS, SEMANTIC_ERROR, GENERATION_ERROR, SECURITY_REJECTED, EXECUTION_ERROR, EXPLANATION_ERROR
+  - MappingResult dataclass for semantic mapping results
+  - GenerationResult dataclass for SQL generation results
+  - SecurityResult dataclass for security validation results
+  - ExecutionResult dataclass for query execution results
+  - QueryResult dataclass for final query results
+- Created tests/test_core_types.py with 12 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_core_types.py -v`
+- All 12 tests passed
+
+### Notes:
+- All data types use dataclasses with proper defaults
+- QueryResult contains all pipeline stages: mapping, sql, security, execution, explanation
+- Phase 1 MVP complete
+
+---
+
 ## 2026-02-16 - Explanation 模块 - 结果解释模块
 
 ### What was done:
