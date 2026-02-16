@@ -1,5 +1,38 @@
 # Progress Log
 
+## 2026-02-16 - Orchestrator Phase 6: 集成测试
+
+### What was done:
+- Created tests/test_orchestrator_integration.py with 16 end-to-end tests
+  - test_e2e_simple_query: 简单查询
+  - test_e2e_list_all_products: 列出所有产品
+  - test_e2e_conditional_query: 条件查询
+  - test_e2e_completed_orders: 已完成订单查询
+  - test_e2e_aggregate_count: 聚合查询 COUNT
+  - test_e2e_aggregate_sum: 聚合查询 SUM
+  - test_e2e_group_by: 分组查询
+  - test_e2e_join_query: 关联查询
+  - test_e2e_security_rejection_dangerous_keyword: 安全拒绝 - 危险关键字
+  - test_e2e_security_rejection_insert: 安全拒绝 - INSERT
+  - test_e2e_security_rejection_update: 安全拒绝 - UPDATE
+  - test_e2e_time_expression: 时间表达式
+  - test_e2e_sort_expression: 排序表达式
+  - test_e2e_result_explanation: 结果解释
+  - test_e2e_metadata_tracking: 元数据追踪
+  - test_e2e_full_pipeline_with_all_stages: 完整流水线
+
+### Testing:
+- Ran `python -m pytest tests/test_orchestrator_integration.py -v`
+- All 16 tests passed
+- All 54 total orchestrator tests pass (12 types + 14 phase2 + 16 integration + 12 others)
+
+### Notes:
+- Integration tests verify full pipeline: semantic mapping -> schema -> generation -> security -> execution -> explanation
+- Tests include security rejection for dangerous operations
+- Phase 6 MVP complete - Orchestrator fully implemented
+
+---
+
 ## 2026-02-16 - Orchestrator Phase 2: 编排器基础架构
 
 ### What was done:
