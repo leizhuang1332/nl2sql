@@ -294,7 +294,7 @@
         "src/semantic/context_aware_mapper.py",
         "tests/test_semantic_phase3.py"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

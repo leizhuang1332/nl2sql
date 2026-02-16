@@ -1,5 +1,30 @@
 # Progress Log
 
+## 2026-02-15 - Semantic Phase 3: 上下文感知映射
+
+### What was done:
+- Implemented ContextAwareMapper class in src/semantic/context_aware_mapper.py
+  - add_context() method for adding field-context associations
+  - remove_context() method for removing associations
+  - resolve_ambiguous_field() method for disambiguation
+  - get_candidates() method for finding candidate fields
+  - get_all_fields() and get_field_keywords() utility methods
+  - _calculate_context_score() for priority-based scoring
+- Created tests/test_semantic_phase3.py with 15 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_semantic_phase3.py -v`
+- All 15 tests passed
+- Verified all 161 tests still pass
+
+### Notes:
+- Uses keyword matching for field disambiguation
+- Supports priority-based scoring
+- Context-aware field resolution
+- Phase 3 MVP complete
+
+---
+
 ## 2026-02-15 - Semantic Phase 2: 向量语义匹配
 
 ### What was done:
