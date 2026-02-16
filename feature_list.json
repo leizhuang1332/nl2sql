@@ -339,20 +339,103 @@
       "passes": true
     },
     {
-      "id": 18,
-      "title": "Security Phase 3: 审计日志",
-      "description": "实现 AuditLogger 审计日志功能",
-      "source": "docs/core-modules-5-phases.md",
-      "priority": "p1",
-      "module": "security",
-      "phase": 3,
+      "id": 19,
+      "title": "Explanation Phase 1: 核心解释功能",
+      "description": "实现 ResultExplainer 结果解释器、DataAnalyst 数据分析师、ResultFormatter 格式化器",
+      "source": "docs/core-modules-6-phases.md",
+      "priority": "p0",
+      "module": "explanation",
+      "phase": 1,
       "steps": [
-        "实现 AuditLogger 审计日志",
+        "实现 ResultExplainer 结果解释器主类",
+        "实现 DataAnalyst 数据分析师",
+        "实现 ResultFormatter 格式化器集合",
         "添加单元测试"
       ],
       "files": [
-        "src/security/audit_logger.py",
-        "tests/test_security_phase3.py"
+        "src/explanation/result_explainer.py",
+        "src/explanation/data_analyst.py",
+        "src/explanation/formatters.py",
+        "tests/test_explanation_phase1.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 20,
+      "title": "Explanation Phase 2: 高级分析功能",
+      "description": "实现 ResultSummarizer 智能摘要生成和 ComparisonAnalyzer 对比分析器",
+      "source": "docs/core-modules-6-phases.md",
+      "priority": "p1",
+      "module": "explanation",
+      "phase": 2,
+      "steps": [
+        "实现 ResultSummarizer 摘要生成器",
+        "实现 ComparisonAnalyzer 对比分析器",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/explanation/summarizer.py",
+        "src/explanation/comparator.py",
+        "tests/test_explanation_phase2.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 21,
+      "title": "Explanation Phase 3: Prompt 模板集成",
+      "description": "实现多种解释 Prompt 模板（简洁回答、详细分析、对比分析）",
+      "source": "docs/core-modules-6-phases.md",
+      "priority": "p1",
+      "module": "explanation",
+      "phase": 3,
+      "steps": [
+        " 模板",
+        "实现详细分析 Prompt 模板",
+        "实现对比实现简洁回答 Prompt分析 Prompt 模板",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/explanation/prompts.py",
+        "tests/test_explanation_phase3.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 22,
+      "title": "Explanation Phase 4: 多格式输出支持",
+      "description": "支持多种输出格式（JSON、Markdown、表格）和多语言支持",
+      "source": "docs/core-modules-6-phases.md",
+      "priority": "p2",
+      "module": "explanation",
+      "phase": 4,
+      "steps": [
+        "扩展 ResultFormatter 支持更多格式",
+        "添加多语言支持（中英文）",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/explanation/formatters.py",
+        "tests/test_explanation_phase4.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 23,
+      "title": "Explanation Phase 5: 集成测试与优化",
+      "description": "模块集成测试、性能优化和错误处理完善",
+      "source": "docs/core-modules-6-phases.md",
+      "priority": "p1",
+      "module": "explanation",
+      "phase": 5,
+      "steps": [
+        "集成测试所有组件",
+        "性能优化",
+        "完善错误处理",
+        "添加端到端测试"
+      ],
+      "files": [
+        "tests/test_explanation_integration.py",
+        "tests/test_explanation_e2e.py"
       ],
       "passes": true
     }
