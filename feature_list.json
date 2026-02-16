@@ -502,7 +502,7 @@
         "src/core/orchestrator.py",
         "tests/test_orchestrator_phase3.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 27,
@@ -523,7 +523,7 @@
         "src/core/orchestrator.py",
         "tests/test_orchestrator_phase4.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 28,
@@ -543,7 +543,7 @@
         "src/core/orchestrator.py",
         "tests/test_orchestrator_phase5.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 29,
@@ -567,7 +567,7 @@
         "tests/test_orchestrator_integration.py",
         "tests/fixtures/questions.json"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
