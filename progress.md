@@ -1,5 +1,37 @@
 # Progress Log
 
+## 2026-02-16 - Security Phase 2: 敏感数据过滤 + 注入检测
+
+### What was done:
+- Implemented SensitiveDataFilter class in src/security/sensitive_filter.py
+  - DEFAULT_SENSITIVE_PATTERNS for common sensitive fields (password, credit_card, ssn, etc.)
+  - is_sensitive_column() for checking if a column is sensitive
+  - filter_result() for masking sensitive data in query results
+  - _mask_value() for masking individual values with configurable visible chars
+  - add_sensitive_pattern() / remove_sensitive_pattern() for custom patterns
+  - filter_columns() and filter_row() utility methods
+- Implemented SQLInjectionDetector class in src/security/injection_detector.py
+  - detect() method returning (is_safe, indicators)
+  - InjectionIndicator dataclass with pattern, severity, description
+  - Detection patterns: UNION injection, comment injection (#, --), OR 1=1, sleep(), waitfor delay, XML injection, etc.
+  - is_safe(), get_indicators(), get_high_severity_indicators(), has_high_severity() utility methods
+  - add_pattern() for custom injection patterns
+- Updated src/security/__init__.py exports
+- Created tests/test_security_phase2.py with 38 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_security_phase2.py -v`
+- All 38 tests passed
+- Verified all 226 tests still pass
+
+### Notes:
+- Supports configurable mask character and visible characters
+- Case-insensitive column name matching
+- High/Medium severity level classification for injection patterns
+- Phase 2 MVP complete
+
+---
+
 ## 2026-02-16 - Security Phase 1: SQL安全验证 + 权限管理
 
 ### What was done:

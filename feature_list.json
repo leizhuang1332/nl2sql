@@ -336,7 +336,7 @@
         "src/security/injection_detector.py",
         "tests/test_security_phase2.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 18,
