@@ -1,5 +1,28 @@
 # Progress Log
 
+## 2026-02-16 - Orchestrator Phase 2: 编排器基础架构
+
+### What was done:
+- Implemented NL2SQLOrchestrator class in src/core/orchestrator.py
+  - __init__() with llm, database_uri, config parameters
+  - _init_modules() initializes all 6 modules (schema, generation, execution, semantic, security, explanation)
+  - ask() method for full pipeline: semantic mapping -> schema prep -> SQL generation -> security validation -> execution -> explanation
+  - _semantic_mapping(), _prepare_schema(), _generate_sql(), _validate_security(), _execute_sql(), _explain_result() methods
+  - get_table_names() and get_schema() utility methods
+- Created tests/test_orchestrator_phase2.py with 14 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_orchestrator_phase2.py -v`
+- All 14 tests passed
+- All 28 core types tests + 14 orchestrator tests pass
+
+### Notes:
+- Orchestrator integrates all 6 modules: schema, generation, execution, semantic, security, explanation
+- ask() method handles full pipeline with error handling
+- Phase 2 MVP complete
+
+---
+
 ## 2026-02-16 - Orchestrator Phase 1: 核心类型定义
 
 ### What was done:
