@@ -1,0 +1,24 @@
+{
+    "field_mappings": {
+        "销售额": ["sales.amount", "orders.total_amount", "revenue.total"],
+        "订单数": ["orders.count", "sales.order_count"],
+        "客户数": ["customers.total", "customers.count"],
+        "毛利率": ["products.profit_margin"],
+        "库存量": ["inventory.quantity", "stock.amount"]
+    },
+    "time_mappings": {
+        "今天": "DATE('now')",
+        "昨天": "DATE('now', '-1 day')",
+        "最近7天": "DATE('now', '-7 days')",
+        "本月": "DATE('now', 'start of month')",
+        "本季度": "DATE('now', 'start of quarter')",
+        "今年": "strftime('%Y', 'now')"
+    },
+    "sort_mappings": {
+        "top": {"type": "limit", "order": "DESC"},
+        "前三": {"type": "limit", "count": 3, "order": "DESC"},
+        "前五": {"type": "limit", "count": 5, "order": "DESC"},
+        "前10": {"type": "limit", "count": 10, "order": "DESC"},
+        "倒数第一": {"type": "limit", "count": 1, "order": "ASC"}
+    }
+}

@@ -256,7 +256,7 @@
         "config/semantic_mappings.json",
         "tests/test_semantic_phase1.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 14,

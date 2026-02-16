@@ -1,5 +1,36 @@
 # Progress Log
 
+## 2026-02-15 - Semantic Phase 1: 核心映射功能
+
+### What was done:
+- Created src/semantic/ directory with __init__.py
+- Implemented SemanticMapper class in src/semantic/semantic_mapper.py
+  - add_field_mapping(), add_time_mapping(), add_sort_mapping()
+  - map() method for semantic mapping with enhancement
+  - get_field_mapping(), get_time_mapping() getters
+  - Default time and sort mappings preloaded
+- Implemented TimeParser class in src/semantic/time_parser.py
+  - parse() method for time expression parsing
+  - parse_range() method for date range parsing
+- Implemented SemanticConfigManager class in src/semantic/config_manager.py
+  - load_config(), save_config() for JSON persistence
+  - get_field_mappings(), get_time_mappings(), get_sort_mappings()
+- Created config/semantic_mappings.json template
+- Created tests/test_semantic_phase1.py with 21 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_semantic_phase1.py -v`
+- All 21 tests passed
+- Verified all 133 tests still pass
+
+### Notes:
+- Supports business term to technical field mapping
+- Preloaded time expressions (今天, 昨天, 本月, etc.)
+- Preloaded sort expressions (top, 前三, 前五, etc.)
+- Phase 1 MVP complete
+
+---
+
 ## 2026-02-15 - Execution Phase 3: 查询监控
 
 ### What was done:
