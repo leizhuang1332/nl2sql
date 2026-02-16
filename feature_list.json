@@ -295,6 +295,66 @@
         "tests/test_semantic_phase3.py"
       ],
       "passes": true
+    },
+    {
+      "id": 16,
+      "title": "Security Phase 1: SQL安全验证 + 权限管理",
+      "description": "实现 SQLSecurityValidator 和 PermissionManager",
+      "source": "docs/core-modules-5-phases.md",
+      "priority": "p0",
+      "module": "security",
+      "phase": 1,
+      "steps": [
+        "实现 SQLSecurityValidator 基础验证",
+        "实现 PermissionManager 权限管理",
+        "创建安全策略配置模板",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/security/sql_validator.py",
+        "src/security/permission_manager.py",
+        "config/security_policy.json",
+        "tests/test_security_phase1.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 17,
+      "title": "Security Phase 2: 敏感数据过滤 + 注入检测",
+      "description": "实现 SensitiveDataFilter 和 SQLInjectionDetector",
+      "source": "docs/core-modules-5-phases.md",
+      "priority": "p1",
+      "module": "security",
+      "phase": 2,
+      "steps": [
+        "实现 SensitiveDataFilter 敏感数据过滤",
+        "实现 SQLInjectionDetector 注入检测",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/security/sensitive_filter.py",
+        "src/security/injection_detector.py",
+        "tests/test_security_phase2.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 18,
+      "title": "Security Phase 3: 审计日志",
+      "description": "实现 AuditLogger 审计日志功能",
+      "source": "docs/core-modules-5-phases.md",
+      "priority": "p1",
+      "module": "security",
+      "phase": 3,
+      "steps": [
+        "实现 AuditLogger 审计日志",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/security/audit_logger.py",
+        "tests/test_security_phase3.py"
+      ],
+      "passes": false
     }
   ]
 }

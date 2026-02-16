@@ -1,0 +1,45 @@
+{
+  "read_only": true,
+  "allowed_tables": [
+    "orders",
+    "products",
+    "customers",
+    "sales"
+  ],
+  "column_permissions": {
+    "customers": {
+      "level": "READ",
+      "columns": ["id", "name", "email", "created_at"]
+    },
+    "orders": {
+      "level": "READ",
+      "columns": null
+    },
+    "products": {
+      "level": "READ",
+      "columns": ["id", "name", "price", "category"]
+    },
+    "sales": {
+      "level": "READ",
+      "columns": null
+    }
+  },
+  "dangerous_keywords": [
+    "DROP",
+    "DELETE",
+    "UPDATE",
+    "INSERT",
+    "ALTER",
+    "CREATE",
+    "TRUNCATE",
+    "EXEC",
+    "EXECUTE"
+  ],
+  "sensitive_fields": [
+    "password",
+    "credit_card",
+    "ssn",
+    "token",
+    "api_key"
+  ]
+}

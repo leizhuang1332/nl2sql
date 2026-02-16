@@ -1,5 +1,39 @@
 # Progress Log
 
+## 2026-02-16 - Security Phase 1: SQL安全验证 + 权限管理
+
+### What was done:
+- Created src/security/ directory with __init__.py
+- Implemented SQLSecurityValidator class in src/security/sql_validator.py
+  - validate() method with threat level detection
+  - _check_dangerous_keywords() for blocking DROP/DELETE/UPDATE/INSERT etc.
+  - _check_suspicious_patterns() for UNION injection, OR 1=1, sleep() etc.
+  - _check_table_whitelist() for table access control
+  - _check_column_whitelist() for column access control
+  - _check_read_only() for SELECT-only enforcement
+  - ThreatLevel enum: SAFE, LOW, MEDIUM, HIGH, CRITICAL
+- Implemented PermissionManager class in src/security/permission_manager.py
+  - set_table_permission() for managing table access
+  - can_read_table(), can_write_table(), can_admin_table() checks
+  - can_access_column() for column-level access control
+  - load_from_config() for JSON configuration loading
+  - PermissionLevel enum: NONE, READ, WRITE, ADMIN
+- Created config/security_policy.json template
+- Created tests/test_security_phase1.py with 27 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_security_phase1.py -v`
+- All 27 tests passed
+- Verified all 188 tests still pass
+
+### Notes:
+- SQLSecurityValidator supports table and column whitelists
+- PermissionManager supports fine-grained column-level permissions
+- Both components can load configuration from JSON
+- Phase 1 MVP complete
+
+---
+
 ## 2026-02-15 - Semantic Phase 3: 上下文感知映射
 
 ### What was done:
