@@ -211,10 +211,9 @@
       ],
       "files": [
         "src/execution/error_analyzer.py",
-        "src/execution/retry_strategy.py",
         "tests/test_execution_phase2.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 12,
