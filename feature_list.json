@@ -232,7 +232,7 @@
         "src/execution/query_monitor.py",
         "tests/test_execution_phase3.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 13,
