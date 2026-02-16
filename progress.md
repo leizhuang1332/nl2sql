@@ -1,5 +1,31 @@
 # Progress Log
 
+## 2026-02-15 - Semantic Phase 2: 向量语义匹配
+
+### What was done:
+- Implemented VectorMatcher class in src/semantic/vector_matcher.py
+  - build_index() method for building vector index from terms
+  - add_term() method for adding manual term-vector pairs
+  - find_similar() method for finding similar terms using embeddings model
+  - find_similar_with_manual_vectors() method for manual vector comparison
+  - _cosine_similarity() method for similarity calculation
+  - clear() method for resetting index
+- Created tests/test_semantic_phase2.py with 13 unit tests
+
+### Testing:
+- Ran `python -m pytest tests/test_semantic_phase2.py -v`
+- All 13 tests passed
+- Verified all 146 tests still pass
+
+### Notes:
+- Supports embedding model integration
+- Provides manual vector addition without model
+- Cosine similarity implementation
+- Configurable threshold and top_k
+- Phase 2 MVP complete
+
+---
+
 ## 2026-02-15 - Semantic Phase 1: 核心映射功能
 
 ### What was done:

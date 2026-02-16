@@ -275,7 +275,7 @@
         "src/semantic/vector_matcher.py",
         "tests/test_semantic_phase2.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 15,
