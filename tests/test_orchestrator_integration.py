@@ -59,8 +59,10 @@ def test_db():
 
 @pytest.fixture
 def mock_llm():
-    llm = Mock()
+    from unittest.mock import MagicMock
+    llm = MagicMock()
     llm.invoke.return_value = "SELECT COUNT(*) FROM users"
+    llm.return_value = "SELECT COUNT(*) FROM users"
     return llm
 
 
@@ -87,6 +89,7 @@ def test_e2e_simple_query(orchestrator):
 def test_e2e_list_all_products(orchestrator):
     """端到端测试 - 列出所有产品"""
     orchestrator.llm.invoke.return_value = "SELECT * FROM products"
+    orchestrator.llm.return_value = "SELECT * FROM products"
     result = orchestrator.ask("列出所有产品")
 
     assert result.status.value == "success"
@@ -97,6 +100,7 @@ def test_e2e_list_all_products(orchestrator):
 def test_e2e_conditional_query(orchestrator):
     """端到端测试 - 带条件查询"""
     orchestrator.llm.invoke.return_value = "SELECT * FROM users WHERE age > 25"
+    orchestrator.llm.return_value = "SELECT * FROM users WHERE age > 25"
     result = orchestrator.ask("年龄大于25的用户有哪些?")
 
     assert result.status.value == "success"
@@ -107,6 +111,7 @@ def test_e2e_conditional_query(orchestrator):
 def test_e2e_completed_orders(orchestrator):
     """端到端测试 - 已完成的订单"""
     orchestrator.llm.invoke.return_value = "SELECT * FROM orders WHERE status = 'completed'"
+    orchestrator.llm.return_value = "SELECT * FROM orders WHERE status = 'completed'"
     result = orchestrator.ask("已完成的订单有哪些?")
 
     assert result.status.value == "success"
@@ -117,6 +122,7 @@ def test_e2e_completed_orders(orchestrator):
 def test_e2e_aggregate_count(orchestrator):
     """端到端测试 - 聚合查询 COUNT"""
     orchestrator.llm.invoke.return_value = "SELECT AVG(amount) FROM orders"
+    orchestrator.llm.return_value = "SELECT AVG(amount) FROM orders"
     result = orchestrator.ask("平均订单金额是多少?")
 
     assert result.status.value == "success"
@@ -127,6 +133,7 @@ def test_e2e_aggregate_count(orchestrator):
 def test_e2e_aggregate_sum(orchestrator):
     """端到端测试 - 聚合查询 SUM"""
     orchestrator.llm.invoke.return_value = "SELECT user_id, SUM(amount) FROM orders GROUP BY user_id"
+    orchestrator.llm.return_value = "SELECT user_id, SUM(amount) FROM orders GROUP BY user_id"
     result = orchestrator.ask("每个用户的订单总额是多少?")
 
     assert result.status.value == "success"
@@ -136,6 +143,7 @@ def test_e2e_aggregate_sum(orchestrator):
 def test_e2e_group_by(orchestrator):
     """端到端测试 - 分组查询"""
     orchestrator.llm.invoke.return_value = "SELECT status, COUNT(*) FROM orders GROUP BY status"
+    orchestrator.llm.return_value = "SELECT status, COUNT(*) FROM orders GROUP BY status"
     result = orchestrator.ask("每个状态有多少订单?")
 
     assert result.status.value == "success"
@@ -146,6 +154,7 @@ def test_e2e_group_by(orchestrator):
 def test_e2e_join_query(orchestrator):
     """端到端测试 - 关联查询"""
     orchestrator.llm.invoke.return_value = "SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders o ON u.id = o.user_id GROUP BY u.id"
+    orchestrator.llm.return_value = "SELECT u.name, COUNT(o.id) FROM users u LEFT JOIN orders o ON u.id = o.user_id GROUP BY u.id"
     result = orchestrator.ask("每个用户的订单数量")
 
     assert result.status.value == "success"
@@ -155,6 +164,7 @@ def test_e2e_join_query(orchestrator):
 def test_e2e_security_rejection_dangerous_keyword(orchestrator):
     """端到端测试 - 安全拒绝 - 危险关键字"""
     orchestrator.llm.invoke.return_value = "DROP TABLE users"
+    orchestrator.llm.return_value = "DROP TABLE users"
 
     result = orchestrator.ask("删除用户表")
 
@@ -166,6 +176,7 @@ def test_e2e_security_rejection_dangerous_keyword(orchestrator):
 def test_e2e_security_rejection_insert(orchestrator):
     """端到端测试 - 安全拒绝 - INSERT 操作"""
     orchestrator.llm.invoke.return_value = "INSERT INTO users VALUES (1, 'test', 20)"
+    orchestrator.llm.return_value = "INSERT INTO users VALUES (1, 'test', 20)"
 
     result = orchestrator.ask("插入一个用户")
 
@@ -177,6 +188,7 @@ def test_e2e_security_rejection_insert(orchestrator):
 def test_e2e_security_rejection_update(orchestrator):
     """端到端测试 - 安全拒绝 - UPDATE 操作"""
     orchestrator.llm.invoke.return_value = "UPDATE users SET age = 100"
+    orchestrator.llm.return_value = "UPDATE users SET age = 100"
 
     result = orchestrator.ask("更新用户年龄")
 

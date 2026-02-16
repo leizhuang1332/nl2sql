@@ -17,14 +17,9 @@ class SQLGenerator:
         self.output_parser = StrOutputParser()
 
     def generate(self, schema: str, question: str) -> str:
-        prompt = self.prompt_template.format(
-            schema=schema,
-            question=question
-        )
-
         try:
-            result = self.llm.invoke(prompt)
-            sql = self.output_parser.parse(result)
+            chain = self.prompt_template | self.llm | self.output_parser
+            sql = chain.invoke({"schema": schema, "question": question})
             return self._clean_sql(sql)
         except Exception as e:
             logger.error(f"SQL 生成失败: {e}")

@@ -43,9 +43,9 @@ def test_sql_generator_clean_sql():
 
 
 def test_sql_generator_with_mock_llm():
-    from langchain_core.messages import AIMessage
     mock_llm = MagicMock()
-    mock_llm.invoke.return_value = AIMessage(content="SELECT * FROM users WHERE age > 18")
+    mock_llm.invoke.return_value = "SELECT * FROM users WHERE age > 18"
+    mock_llm.return_value = "SELECT * FROM users WHERE age > 18"
     generator = SQLGenerator(llm=mock_llm)
     result = generator._clean_sql("SELECT * FROM users WHERE age > 18")
     assert result == "SELECT * FROM users WHERE age > 18"

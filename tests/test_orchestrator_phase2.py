@@ -7,8 +7,10 @@ from unittest.mock import Mock, patch
 
 @pytest.fixture
 def mock_llm():
-    llm = Mock()
-    llm.invoke.return_value = Mock(content="SELECT * FROM users")
+    from unittest.mock import MagicMock
+    llm = MagicMock()
+    llm.invoke.return_value = "SELECT COUNT(*) FROM users"
+    llm.return_value = "SELECT COUNT(*) FROM users"
     return llm
 
 
