@@ -174,6 +174,128 @@
         "tests/test_generation_phase3.py"
       ],
       "passes": true
+    },
+    {
+      "id": 10,
+      "title": "Execution Phase 1: 查询执行器 + 结果处理",
+      "description": "实现 QueryExecutor 查询执行器和 ResultHandler 结果处理器",
+      "source": "docs/core-modules-3.md",
+      "priority": "p0",
+      "module": "execution",
+      "phase": 1,
+      "steps": [
+        "实现 QueryExecutor 基础执行",
+        "实现错误捕获与重试逻辑",
+        "实现 ResultHandler 结果处理",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/execution/query_executor.py",
+        "src/execution/result_handler.py",
+        "tests/test_execution_phase1.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 11,
+      "title": "Execution Phase 2: 错误分析 + 重试策略",
+      "description": "实现 ErrorAnalyzer 错误分析和 RetryConfig 重试策略",
+      "source": "docs/core-modules-3.md",
+      "priority": "p1",
+      "module": "execution",
+      "phase": 2,
+      "steps": [
+        "实现 ErrorAnalyzer 错误分析",
+        "实现 RetryConfig 重试策略",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/execution/error_analyzer.py",
+        "src/execution/retry_strategy.py",
+        "tests/test_execution_phase2.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 12,
+      "title": "Execution Phase 3: 查询监控",
+      "description": "实现 QueryMonitor 查询监控和慢查询检测",
+      "source": "docs/core-modules-3.md",
+      "priority": "p2",
+      "module": "execution",
+      "phase": 3,
+      "steps": [
+        "实现 QueryMonitor 查询监控",
+        "实现慢查询检测",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/execution/query_monitor.py",
+        "tests/test_execution_phase3.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 13,
+      "title": "Semantic Phase 1: 核心映射功能",
+      "description": "实现 SemanticMapper、TimeParser、ConfigManager 核心映射功能",
+      "source": "docs/core-modules-4-phases.md",
+      "priority": "p0",
+      "module": "semantic",
+      "phase": 1,
+      "steps": [
+        "实现 SemanticMapper 语义映射器",
+        "实现 TimeParser 时间表达式解析",
+        "实现 SemanticConfigManager 配置管理",
+        "创建配置文件模板",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/semantic/semantic_mapper.py",
+        "src/semantic/time_parser.py",
+        "src/semantic/config_manager.py",
+        "config/semantic_mappings.json",
+        "tests/test_semantic_phase1.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 14,
+      "title": "Semantic Phase 2: 向量语义匹配",
+      "description": "实现 VectorMatcher 向量语义匹配功能",
+      "source": "docs/core-modules-4-phases.md",
+      "priority": "p1",
+      "module": "semantic",
+      "phase": 2,
+      "steps": [
+        "实现 VectorMatcher 向量匹配",
+        "实现余弦相似度计算",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/semantic/vector_matcher.py",
+        "tests/test_semantic_phase2.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 15,
+      "title": "Semantic Phase 3: 上下文感知映射",
+      "description": "实现 ContextAwareMapper 上下文感知字段消解",
+      "source": "docs/core-modules-4-phases.md",
+      "priority": "p1",
+      "module": "semantic",
+      "phase": 3,
+      "steps": [
+        "实现 ContextAwareMapper 上下文感知",
+        "实现字段歧义消解",
+        "添加单元测试"
+      ],
+      "files": [
+        "src/semantic/context_aware_mapper.py",
+        "tests/test_semantic_phase3.py"
+      ],
+      "passes": false
     }
   ]
 }
