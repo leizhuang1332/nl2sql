@@ -69,6 +69,27 @@
 
 ---
 
+## 2026-02-19 - CLI & API Phase 4: 依赖更新
+
+### What was done:
+- Added FastAPI dependencies to pyproject.toml:
+  - fastapi>=0.100.0
+  - uvicorn>=0.20.0
+  - pyyaml>=6.0
+- Updated requirements.txt with:
+  - pyyaml>=6.0
+  - fastapi>=0.100.0
+  - uvicorn>=0.20.0
+
+### Testing:
+- Verified all dependencies import correctly
+- Verified pyproject.toml and requirements.txt are valid
+
+### Notes:
+- Phase 4 MVP complete - Dependencies added
+
+---
+
 ## 2026-02-19 - CLI & API Phase 1: YAML 配置系统
 
 ### What was done:

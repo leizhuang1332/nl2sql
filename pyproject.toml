@@ -14,6 +14,9 @@ dependencies = [
     "pydantic-settings>=2.0.0",
     "python-dotenv>=1.0.0",
     "sqlparse>=0.4.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]

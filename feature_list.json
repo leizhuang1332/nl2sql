@@ -655,7 +655,7 @@
         "pyproject.toml",
         "requirements.txt"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 34,
