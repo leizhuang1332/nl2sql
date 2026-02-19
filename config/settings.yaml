@@ -7,11 +7,11 @@
 # LLM 配置
 llm:
   # LLM 提供商: openai / minimax / anthropic / ollama / custom
-  provider: openai
+  provider: minimax
   # 模型名称
-  model: gpt-4o
+  model: MiniMax-M2.5
   # API Key - 建议使用环境变量引用，不直接写入文件
-  api_key: ${OPENAI_API_KEY}
+  api_key: ${MINIMAX_API_KEY}
   # API Base URL (用于自定义 provider 或代理)
   base_url: ""
   # 温度参数
