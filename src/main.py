@@ -157,13 +157,19 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
     
     @app.get("/schema/{table_name}")
     async def get_table_schema(table_name: str) -> Dict[str, Any]:
-        orchestrator = create_orchestrator(settings)
-        schema = orchestrator.get_schema(table_name)
-        
-        if not schema:
-            raise HTTPException(status_code=404, detail=f"Table '{table_name}' not found")
-        
-        return {"table": table_name, "schema": schema}
+        try:
+            orchestrator = create_orchestrator(settings)
+            schema = orchestrator.get_schema(table_name)
+            
+            if not schema:
+                raise HTTPException(status_code=404, detail=f"Table '{table_name}' not found")
+            
+            return {"table": table_name, "schema": schema}
+        except ValueError as e:
+            raise HTTPException(status_code=404, detail=str(e))
+        except Exception as e:
+            logger.exception("Failed to get schema")
+            raise HTTPException(status_code=500, detail=str(e))
     
     @app.post("/query", response_model=QueryResponse)
     async def query(request: QueryRequest, http_request: Request) -> QueryResponse:

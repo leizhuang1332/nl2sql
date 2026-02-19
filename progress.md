@@ -90,6 +90,31 @@
 
 ---
 
+## 2026-02-19 - CLI & API Phase 5: 测试验证
+
+### What was done:
+- Created tests/test_config.py with 10 tests:
+  - TestSettings: default values, kwargs, YAML loading, env var replacement
+  - TestGetSettings: caching, override functionality
+- Created tests/test_cli.py with 8 tests:
+  - TestCLI: help output, tables/schema/query commands
+  - TestCreateOrchestrator: basic creation, singleton pattern
+- Created tests/test_api.py with 8 tests:
+  - TestAPI: app creation, health/tables/schema/query endpoints
+  - TestAPIEndpoints: CORS headers
+
+### Testing:
+- All 42 new tests pass (10 config + 8 CLI + 8 API + 16 integration)
+- Tested CLI commands: tables, schema <table>
+- Tested API endpoints: /health, /tables, /schema/{table}, /query
+
+### Notes:
+- Fixed /schema endpoint to handle ValueError properly
+- All tests verified working correctly
+- Phase 5 MVP complete - Testing verification complete
+
+---
+
 ## 2026-02-19 - CLI & API Phase 1: YAML 配置系统
 
 ### What was done:

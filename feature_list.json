@@ -683,7 +683,7 @@
         "tests/test_api.py",
         "tests/test_config.py"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
