@@ -112,13 +112,14 @@ def run_cli(args: argparse.Namespace, settings: Settings) -> None:
             print(f"\nQuestion: {result.question}")
             if args.show_sql and result.sql:
                 print(f"\nSQL: {result.sql}")
-            print(f"\nResult: {result.result}")
+            if result.execution and result.execution.result:
+                print(f"\nResult: {result.execution.result}")
             if result.explanation:
                 print(f"\nExplanation: {result.explanation}")
         else:
             print(f"Error: {result.status.value}")
-            if result.error:
-                print(f"Details: {result.error}")
+            if result.error_message:
+                print(f"Details: {result.error_message}")
             sys.exit(1)
         return
     
@@ -180,11 +181,11 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
             
             return QueryResponse(
                 question=result.question,
-                result=result.result,
+                result=result.execution.result if result.execution else None,
                 sql=result.sql if request.include_sql else None,
                 table_schema=result.execution.schema if request.include_schema and result.execution else None,
                 status=result.status.value,
-                error=result.error
+                error=result.error_message
             )
         except Exception as e:
             logger.exception("Query execution failed")
