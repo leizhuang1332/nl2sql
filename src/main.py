@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 class QueryRequest(BaseModel):
     question: str
-    include_schema: bool = False
     include_sql: bool = False
 
 
@@ -31,7 +30,6 @@ class QueryResponse(BaseModel):
     question: str
     result: Any
     sql: Optional[str] = None
-    table_schema: Optional[Dict] = None
     status: str
     error: Optional[str] = None
 
@@ -183,7 +181,6 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                 question=result.question,
                 result=result.execution.result if result.execution else None,
                 sql=result.sql if request.include_sql else None,
-                table_schema=None,
                 status=result.status.value,
                 error=result.error_message
             )

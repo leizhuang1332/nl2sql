@@ -63,7 +63,7 @@
 ### Notes:
 - Handles missing LLM dependencies gracefully with warning
 - CLI supports --show-sql flag to display generated SQL
-- API supports include_sql and include_schema query parameters
+- API supports include_sql query parameter
 - Created example.db with sample data for testing
 - Phase 3 MVP complete - CLI and API entry points ready
 

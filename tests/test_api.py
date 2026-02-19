@@ -89,8 +89,7 @@ class TestAPI:
         
         response = client.post("/query", json={
             "question": "test",
-            "include_sql": True,
-            "include_schema": True
+            "include_sql": True
         })
         
         assert response.status_code in [200, 500]
