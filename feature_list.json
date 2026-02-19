@@ -568,6 +568,122 @@
         "tests/fixtures/questions.json"
       ],
       "passes": true
+    },
+    {
+      "id": 30,
+      "title": "CLI & API Phase 1: YAML 配置系统",
+      "description": "创建 YAML 格式配置文件，支持结构化配置管理",
+      "source": "docs/implementation-plan-cli-api-phases.md",
+      "priority": "p0",
+      "module": "core",
+      "phase": 1,
+      "steps": [
+        "创建 config/settings.yaml 文件",
+        "定义 LLM 配置（provider, model, api_key, temperature）",
+        "定义 Database 配置（uri）",
+        "定义 Security 配置（read_only, max_retries, timeout, allowed_tables）",
+        "定义 Paths 配置（field_descriptions, semantic_mappings, security_policy）",
+        "定义 API 配置（host, port, cors_origins）",
+        "定义 Logging 配置（level, format）"
+      ],
+      "files": [
+        "config/settings.yaml"
+      ],
+      "passes": false
+    },
+    {
+      "id": 31,
+      "title": "CLI & API Phase 2: 配置系统增强",
+      "description": "更新 src/config.py 支持 YAML 配置加载，与 .env 兼容",
+      "source": "docs/implementation-plan-cli-api-phases.md",
+      "priority": "p0",
+      "module": "core",
+      "phase": 2,
+      "steps": [
+        "添加 pyyaml 导入",
+        "添加 lru_cache 装饰器",
+        "创建 get_yaml_settings() 类方法",
+        "实现配置合并逻辑（yaml < .env < explicit kwargs）",
+        "更新字段命名（添加 llm_ 前缀）",
+        "添加 API 相关配置字段"
+      ],
+      "files": [
+        "src/config.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 32,
+      "title": "CLI & API Phase 3: 主入口实现",
+      "description": "实现 src/main.py 提供 CLI 和 FastAPI 双模式入口",
+      "source": "docs/implementation-plan-cli-api-phases.md",
+      "priority": "p0",
+      "module": "core",
+      "phase": 3,
+      "steps": [
+        "定义 create_orchestrator(settings) 函数",
+        "实现 CLI 模式 run_cli(args, settings)",
+        "实现 FastAPI 工厂 create_app(settings)",
+        "实现 /query 端点（POST）",
+        "实现 /tables 端点（GET）",
+        "实现 /schema/{table_name} 端点（GET）",
+        "实现 /health 端点（GET）",
+        "配置 CORS",
+        "创建 main() 入口函数",
+        "支持 cli/api 子命令"
+      ],
+      "files": [
+        "src/main.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 33,
+      "title": "CLI & API Phase 4: 依赖更新",
+      "description": "添加 FastAPI 相关依赖到项目",
+      "source": "docs/implementation-plan-cli-api-phases.md",
+      "priority": "p0",
+      "module": "core",
+      "phase": 4,
+      "steps": [
+        "在 pyproject.toml 添加 fastapi >= 0.100.0",
+        "在 pyproject.toml 添加 uvicorn >= 0.20.0",
+        "在 pyproject.toml 添加 pyyaml >= 6.0",
+        "更新 requirements.txt"
+      ],
+      "files": [
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "passes": false
+    },
+    {
+      "id": 34,
+      "title": "CLI & API Phase 5: 测试验证",
+      "description": "创建完整的测试用例验证 CLI 和 API 功能",
+      "source": "docs/implementation-plan-cli-api-testing.md",
+      "priority": "p1",
+      "module": "core",
+      "phase": 5,
+      "steps": [
+        "创建 tests/test_cli.py CLI 测试",
+        "创建 tests/test_api.py API 测试",
+        "创建 tests/test_config.py 配置测试",
+        "测试 CLI 基本查询",
+        "测试 CLI 安全拒绝",
+        "测试 API /health 端点",
+        "测试 API /tables 端点",
+        "测试 API /schema/{table} 端点",
+        "测试 API /query 端点",
+        "测试配置加载优先级",
+        "运行回归测试"
+      ],
+      "files": [
+        "tests/test_cli.py",
+        "tests/test_api.py",
+        "tests/test_config.py"
+      ],
+      "passes": false
     }
   ]
 }
