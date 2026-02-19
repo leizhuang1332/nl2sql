@@ -12,6 +12,9 @@ NL2SQL 是一个能够将自然语言转换为 SQL 查询的工具，支持：
 - **安全验证**：SQL 注入检测、权限控制、只读模式
 - **结果解释**：将查询结果转换为自然语言
 
+**项目架构**：[docs/technical-architecture.md](https://github.com/leizhuang1332/nl2sql/blob/master/docs/technical-architecture.md)
+**编排层设计**：[docs/orchestrator-design.md](https://github.com/leizhuang1332/nl2sql/blob/master/docs/orchestrator-design.md)
+
 ## 快速开始
 
 ### 安装
