@@ -34,6 +34,41 @@
 
 ---
 
+## 2026-02-19 - CLI & API Phase 3: 主入口实现
+
+### What was done:
+- Created src/main.py with CLI and FastAPI dual-mode entry:
+  - Implemented create_orchestrator(settings) function for orchestrator creation
+  - Implemented CLI mode with run_cli(args, settings):
+    - tables subcommand: List all tables
+    - schema <table> subcommand: Get table schema
+    - query <question> subcommand: Execute natural language query
+  - Implemented FastAPI factory create_app(settings):
+    - /health endpoint (GET): Health check
+    - /tables endpoint (GET): List all tables
+    - /schema/{table_name} endpoint (GET): Get table schema
+    - /query endpoint (POST): Execute natural language query
+  - Configured CORS middleware with configurable origins
+  - Implemented main() entry point with argparse
+  - Added --config, --log-level global options
+  - Added cli/api subcommands with respective options
+
+### Testing:
+- Tested CLI help: `python -m src.main --help`
+- Tested CLI tables command: lists available tables
+- Tested CLI schema command: shows table schema
+- Tested API help: `python -m src.main api --help`
+- All integration tests pass (16/16)
+
+### Notes:
+- Handles missing LLM dependencies gracefully with warning
+- CLI supports --show-sql flag to display generated SQL
+- API supports include_sql and include_schema query parameters
+- Created example.db with sample data for testing
+- Phase 3 MVP complete - CLI and API entry points ready
+
+---
+
 ## 2026-02-19 - CLI & API Phase 1: YAML 配置系统
 
 ### What was done:
