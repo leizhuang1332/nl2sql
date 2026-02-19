@@ -1,5 +1,39 @@
 # Progress Log
 
+## 2026-02-19 - CLI & API Phase 2: 配置系统增强
+
+### What was done:
+- Updated src/config.py with comprehensive Settings class:
+  - Added pyyaml import for YAML parsing
+  - Added lru_cache decorator for performance
+  - Implemented get_yaml_settings() class method with environment variable support
+  - Implemented configuration merge logic (yaml < .env < explicit kwargs)
+  - Added all API-related configuration fields (host, port, cors_origins, reload, workers, log_level)
+  - Added LLM configuration fields (llm_provider, llm_model, llm_api_key, etc.)
+  - Added Database configuration fields (database_uri, pool_size, etc.)
+  - Added Security configuration fields (security_read_only, security_max_retries, etc.)
+  - Added Logging, Execution, Explanation, and Semantic configuration fields
+  - Added to_dict() method for dictionary conversion
+  - Added get_settings() convenience function with caching
+
+### Testing:
+- Verified config module loads successfully
+- Tested YAML settings loading (55 keys loaded)
+- Tested Settings.from_yaml() method
+- Tested Settings instantiation with defaults
+- Tested kwargs override functionality
+- All integration tests pass (16/16)
+- 363 total tests pass (excluding pre-existing failures)
+
+### Notes:
+- Environment variable format: ${VAR_NAME} or ${VAR_NAME:-default_value}
+- Unset env vars with no default are preserved as-is for visibility
+- All field names use lowercase with underscores (snake_case)
+- Field aliases support both yaml-style and env-style naming
+- Phase 2 MVP complete - Configuration system enhanced
+
+---
+
 ## 2026-02-19 - CLI & API Phase 1: YAML 配置系统
 
 ### What was done:

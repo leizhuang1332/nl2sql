@@ -610,7 +610,7 @@
       "files": [
         "src/config.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 32,
