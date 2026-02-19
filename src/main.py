@@ -183,7 +183,7 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
                 question=result.question,
                 result=result.execution.result if result.execution else None,
                 sql=result.sql if request.include_sql else None,
-                table_schema=result.execution.schema if request.include_schema and result.execution else None,
+                table_schema=None,
                 status=result.status.value,
                 error=result.error_message
             )
