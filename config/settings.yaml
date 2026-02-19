@@ -1,0 +1,155 @@
+# NL2SQL Configuration File
+# 使用说明:
+# 1. 此文件为默认配置
+# 2. .env 文件中的变量会覆盖此配置
+# 3. 代码中显式传入的参数优先级最高
+
+# LLM 配置
+llm:
+  # LLM 提供商: openai / minimax / anthropic / ollama / custom
+  provider: openai
+  # 模型名称
+  model: gpt-4o
+  # API Key - 建议使用环境变量引用，不直接写入文件
+  api_key: ${OPENAI_API_KEY}
+  # API Base URL (用于自定义 provider 或代理)
+  base_url: ""
+  # 温度参数
+  temperature: 0.7
+  # 最大 token 数
+  max_tokens: 2000
+  # 请求超时时间（秒）
+  timeout: 60
+
+# MiniMax 专用配置（当 provider 为 minimax 时使用）
+minimax:
+  api_key: ${MINIMAX_API_KEY}
+  model: MiniMax-M2.5
+  base_url: https://api.minimaxi.com/anthropic
+
+# Anthropic 专用配置（当 provider 为 anthropic 时使用）
+anthropic:
+  api_key: ${ANTHROPIC_API_KEY}
+  model: claude-3-5-sonnet-20241022
+
+# Ollama 专用配置（当 provider 为 ollama 时使用）
+ollama:
+  base_url: http://localhost:11434
+  model: llama2
+
+# Database 配置
+database:
+  # 数据库连接 URI
+  # 支持格式:
+  #   sqlite:///example.db (相对路径)
+  #   sqlite:////absolute/path/example.db (绝对路径)
+  #   mysql+pymysql://user:password@host:port/database
+  #   postgresql://user:password@host:port/database
+  uri: sqlite:///example.db
+  # 连接池大小
+  pool_size: 5
+  # 连接池最大溢出
+  max_overflow: 10
+  # 连接池回收时间（秒）
+  pool_recycle: 3600
+  # 查询超时时间（秒）
+  query_timeout: 30
+  # Echo SQL 语句（调试用）
+  echo: false
+
+# Security 安全策略配置
+security:
+  # 只读模式：禁止 INSERT/UPDATE/DELETE/DROP/ALTER/TRUNCATE
+  read_only: true
+  # 最大重试次数
+  max_retries: 3
+  # 查询超时时间（秒）
+  timeout: 30
+  # 允许访问的表（空列表表示允许所有）
+  allowed_tables: []
+  # 禁止执行的 SQL 关键词
+  forbidden_keywords:
+    - DROP
+    - TRUNCATE
+    - ALTER
+    - CREATE
+  # 每次查询返回的最大行数
+  max_rows: 1000
+
+# Paths 配置文件路径
+paths:
+  # 字段描述配置文件
+  field_descriptions: config/field_descriptions.json
+  # 语义映射配置文件
+  semantic_mappings: config/semantic_mappings.json
+  # 安全策略配置文件
+  security_policy: config/security_policy.json
+
+# API 服务配置
+api:
+  # 监听主机
+  host: 0.0.0.0
+  # 监听端口
+  port: 8000
+  # CORS 允许的源（* 表示允许所有）
+  cors_origins:
+    - "*"
+  # 是否自动reload（开发环境）
+  reload: false
+  # 工作进程数
+  workers: 1
+  # 日志级别
+  log_level: info
+
+# Logging 日志配置
+logging:
+  # 日志级别: DEBUG / INFO / WARNING / ERROR / CRITICAL
+  level: INFO
+  # 日志格式
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  # 日志文件路径（空字符串表示只输出到控制台）
+  file: ""
+  # 日志文件最大大小（MB）
+  file_max_size: 10
+  # 日志文件保留数量
+  file_backup_count: 5
+  # 是否输出 SQL 语句
+  log_sql: false
+
+# Execution 执行配置
+execution:
+  # 是否启用执行
+  enabled: true
+  # 执行重试次数
+  retries: 3
+  # 重试间隔（秒）
+  retry_interval: 1
+  # 执行超时时间（秒）
+  timeout: 60
+
+# Explanation 解释配置
+explanation:
+  # 是否启用结果解释
+  enabled: true
+  # 解释模式: simple / detailed / comparison
+  mode: simple
+  # 输出格式: text / json / markdown
+  format: text
+  # 语言: en / zh
+  language: zh
+
+# Semantic 语义配置
+semantic:
+  # 是否启用语义映射
+  enabled: true
+  # 是否启用向量匹配
+  vector_matching:
+    enabled: false
+    # 向量模型类型: openai / sentence-transformers
+    provider: openai
+    # 模型名称
+    model: text-embedding-3-small
+  # 相似度阈值
+  similarity_threshold: 0.7
+  # 上下文窗口大小
+  context_window: 3
