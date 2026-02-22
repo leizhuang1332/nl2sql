@@ -19,7 +19,7 @@ interface HistoryItem {
 export default function Home() {
   const { message } = App.useApp();
   const [selectedDb, setSelectedDb] = useState('example.db');
-  const [query, setQuery] = useState('');
+  const [, setQuery] = useState('');
   const [sql, setSql] = useState('');
   const [results, setResults] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(false);
