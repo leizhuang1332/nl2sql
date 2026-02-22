@@ -273,6 +273,7 @@ class NL2SQLOrchestrator:
                 "question": question,
                 "sql": sql,
                 "execution_result": execution_result.result,
+                "columns": columns,
                 "explanation": explanation if 'explanation' in locals() else None,
             },
             "timestamp": time.time() - start_time

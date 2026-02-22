@@ -66,38 +66,45 @@ export default function Home() {
           if (data?.sql) {
             setSql(data.sql as string);
           }
+          
+          // Handle execution_result from both execution and done stages
           // execution_result is returned as a string in the format "[(...), (...)]"
           // We need to parse it to display in the table
-          if (data?.execution_result) {
+          if (data?.execution_result && chunk.stage !== 'explained') {
             const execResult = data.execution_result as string;
             
-            // Get column names from execution stage if available
+            // Get column names from data if available
             const columns = data.columns as string[] | undefined;
             
-            try {
-              // Try to parse the string representation of tuples
-              const parsed = execResult.replace(/\(/g, '[').replace(/\)/g, ']');
-              const rows = JSON.parse(parsed) as unknown[][];
-              if (Array.isArray(rows) && rows.length > 0) {
-                // Use provided column names or generate generic ones
-                const columnNames = columns && columns.length > 0 
-                  ? columns 
-                  : Array.from({ length: Math.max(...rows.map(r => Array.isArray(r) ? r.length : 0)) }, (_, i) => `column_${i}`);
-                
-                const formattedResults = rows.map(row => {
-                  const obj: Record<string, unknown> = {};
-                  if (Array.isArray(row)) {
-                    row.forEach((val, idx) => {
-                      obj[columnNames[idx]] = val;
-                    });
-                  }
-                  return obj;
-                });
-                setResults(formattedResults);
+            if (execResult && execResult.trim()) {
+              try {
+                // Parse the string representation of tuples
+                // First, convert single quotes to double quotes (but preserve escaped quotes)
+                let parsed = execResult
+                  .replace(/\(/g, '[')
+                  .replace(/\)/g, ']')
+                  .replace(/'/g, '"');
+                const rows = JSON.parse(parsed) as unknown[][];
+                if (Array.isArray(rows) && rows.length > 0) {
+                  // Use provided column names or generate generic ones
+                  const columnNames = columns && columns.length > 0 
+                    ? columns 
+                    : Array.from({ length: Math.max(...rows.map(r => Array.isArray(r) ? r.length : 0)) }, (_, i) => `column_${i}`);
+                  
+                  const formattedResults = rows.map(row => {
+                    const obj: Record<string, unknown> = {};
+                    if (Array.isArray(row)) {
+                      row.forEach((val, idx) => {
+                        obj[columnNames[idx]] = val;
+                      });
+                    }
+                    return obj;
+                  });
+                  setResults(formattedResults);
+                }
+              } catch (e) {
+                console.error('Failed to parse execution_result:', e);
               }
-            } catch {
-              // If parsing fails, just set the raw result
-              setResults([{ result: execResult }] as Record<string, unknown>[]);
             }
           }
         },
