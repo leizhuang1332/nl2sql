@@ -716,7 +716,158 @@
         "tests/test_cli_stream.py",
         "tests/test_api_stream.py"
       ],
-      "passes": false
+      "passes": true
+    },
+    {
+      "id": 36,
+      "title": "Frontend Phase 1: 前端基础架构",
+      "description": "创建 Next.js 项目并配置 Ant Design ProComponents 主题和全局样式",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 1,
+      "steps": [
+        "创建 Next.js 项目 (frontend 目录)",
+        "配置 Tailwind CSS",
+        "安装 shadcn/ui 组件库",
+        "安装 Ant Design + ProComponents",
+        "配置 Ant Design ConfigProvider 深色主题",
+        "在 globals.css 添加设计系统配色",
+        "创建 Header 组件 (数据库选择器 + 历史记录下拉菜单)"
+      ],
+      "files": [
+        "frontend/",
+        "frontend/src/app/globals.css",
+        "frontend/src/components/Providers.tsx",
+        "frontend/src/components/nl2sql/Header.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 37,
+      "title": "Frontend Phase 2: SchemaExplorer 组件",
+      "description": "实现 Schema Explorer 组件，展示数据库表结构树形视图",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 2,
+      "steps": [
+        "创建 src/components/nl2sql/SchemaExplorer.tsx",
+        "使用 Ant Design Tree 组件展示数据库表结构",
+        "添加搜索过滤功能",
+        "展示列名、类型、主键信息",
+        "添加加载状态"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/SchemaExplorer.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 38,
+      "title": "Frontend Phase 3: QueryInput 组件",
+      "description": "实现自然语言查询输入组件",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 3,
+      "steps": [
+        "创建 src/components/nl2sql/QueryInput.tsx",
+        "使用 Ant Design Input.TextArea 组件",
+        "添加发送按钮调用 API",
+        "支持加载状态显示",
+        "支持流式输出显示"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/QueryInput.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 39,
+      "title": "Frontend Phase 4: SQLPreview 组件",
+      "description": "实现 SQL 预览组件，展示生成的 SQL 并提供操作按钮",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 4,
+      "steps": [
+        "创建 src/components/nl2sql/SQLPreview.tsx",
+        "使用 Ant Design Card 组件展示 SQL",
+        "添加 Edit in Editor 按钮",
+        "添加 Run 按钮",
+        "添加 Copy 按钮",
+        "使用 JetBrains Mono 字体"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/SQLPreview.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 40,
+      "title": "Frontend Phase 5: ResultsTable 组件",
+      "description": "实现查询结果表格组件，支持分页和空状态展示",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 5,
+      "steps": [
+        "创建 src/components/nl2sql/ResultsTable.tsx",
+        "使用 Ant Design Table 组件",
+        "支持分页功能",
+        "添加空状态提示",
+        "支持列排序"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/ResultsTable.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 41,
+      "title": "Frontend Phase 6: HybridLayout + 主页面集成",
+      "description": "实现可调整的 Hybrid 布局并将所有组件集成到主页面",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 6,
+      "steps": [
+        "创建 src/components/nl2sql/HybridLayout.tsx",
+        "使用 shadcn/ui ResizablePanel 实现左右可调面板",
+        "设置最小宽度限制",
+        "更新 src/app/page.tsx 组合所有组件",
+        "添加状态管理 (query, sql, results)",
+        "验证组件间状态正确传递"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/HybridLayout.tsx",
+        "frontend/src/app/page.tsx"
+      ],
+      "passes": true
+    },
+    {
+      "id": 42,
+      "title": "Frontend Phase 7: API 集成 + 构建验证",
+      "description": "实现 API 客户端连接后端，并完成构建验证",
+      "source": ".sisyphus/plans/nl2sql-frontend-hybrid.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 7,
+      "steps": [
+        "创建 src/lib/api.ts API 客户端",
+        "实现 /query 接口调用",
+        "实现 /tables 接口调用",
+        "实现 /schema 接口调用",
+        "添加错误处理",
+        "运行 npm run build 验证构建",
+        "运行 npm run lint 验证代码",
+        "使用 Playwright 进行 UI 测试"
+      ],
+      "files": [
+        "frontend/src/lib/api.ts"
+      ],
+      "passes": true
     }
   ]
 }
