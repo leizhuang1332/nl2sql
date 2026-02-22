@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { App } from 'antd';
 import Header from '@/components/nl2sql/Header';
 import SchemaExplorer from '@/components/nl2sql/SchemaExplorer';
@@ -150,7 +150,7 @@ export default function Home() {
     }
   };
 
-  const leftPanel = <SchemaExplorer loading={loading} />;
+  const leftPanel = useMemo(() => <SchemaExplorer />, []);
   
   const rightPanel = (
     <div className="h-full flex flex-col p-4 gap-4 overflow-auto">
