@@ -868,6 +868,129 @@
         "frontend/src/lib/api.ts"
       ],
       "passes": true
+    },
+    {
+      "id": 43,
+      "title": "Frontend-Backend Integration Phase 1: 修正 API 类型定义",
+      "description": "修正前端 api.ts 类型定义，与后端响应格式匹配",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 1,
+      "steps": [
+        "修正 QueryResponse 类型定义 (result vs results)",
+        "修正 SchemaResponse 类型定义",
+        "添加 include_sql 请求参数支持",
+        "验证类型与后端 API 响应匹配"
+      ],
+      "files": [
+        "frontend/src/lib/api.ts"
+      ],
+      "passes": true
+    },
+    {
+      "id": 44,
+      "title": "Frontend-Backend Integration Phase 2: Schema Explorer 对接",
+      "description": "将 Schema Explorer 组件对接后端 /tables 和 /schema API，显示真实数据库结构",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 2,
+      "steps": [
+        "在 SchemaExplorer.tsx 添加 useEffect 加载数据",
+        "调用 nl2sqlApi.getTables() 获取表列表",
+        "遍历表名调用 nl2sqlApi.getSchema() 获取表结构",
+        "处理加载状态和错误状态",
+        "添加缓存机制避免重复请求"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/SchemaExplorer.tsx"
+      ],
+      "passes": false
+    },
+    {
+      "id": 45,
+      "title": "Frontend-Backend Integration Phase 3: 查询功能对接",
+      "description": "将页面查询功能对接后端 /query API，实现真实自然语言转 SQL 查询",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 3,
+      "steps": [
+        "修改 page.tsx 导入 nl2sqlApi",
+        "在 handleQuerySubmit 中调用 nl2sqlApi.query()",
+        "处理响应设置 sql 和 results 状态",
+        "添加错误处理和加载状态",
+        "配置 include_sql: true 获取 SQL 语句"
+      ],
+      "files": [
+        "frontend/src/app/page.tsx"
+      ],
+      "passes": false
+    },
+    {
+      "id": 46,
+      "title": "Frontend-Backend Integration Phase 4: 流式响应支持",
+      "description": "实现 /query/stream 流式 API 对接，支持实时显示查询进度和中间结果",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p1",
+      "module": "frontend",
+      "phase": 4,
+      "steps": [
+        "在 api.ts 添加流式请求方法",
+        "实现 SSE (Server-Sent Events) 消费逻辑",
+        "修改 QueryInput 支持流式输出显示",
+        "分阶段显示处理进度 (语义映射 → SQL生成 → 执行 → 解释)",
+        "添加单元测试验证流式功能"
+      ],
+      "files": [
+        "frontend/src/lib/api.ts",
+        "frontend/src/components/nl2sql/QueryInput.tsx",
+        "frontend/tests/test_stream.ts"
+      ],
+      "passes": false
+    },
+    {
+      "id": 47,
+      "title": "Frontend-Backend Integration Phase 5: 环境变量配置",
+      "description": "配置前端环境变量，确保正确连接后端 API",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p1",
+      "module": "frontend",
+      "phase": 5,
+      "steps": [
+        "创建 frontend/.env.local 文件",
+        "配置 NEXT_PUBLIC_API_URL=http://localhost:8000",
+        "验证 CORS 配置正确",
+        "测试前后端连通性"
+      ],
+      "files": [
+        "frontend/.env.local"
+      ],
+      "passes": false
+    },
+    {
+      "id": 48,
+      "title": "Frontend-Backend Integration Phase 6: 集成测试验证",
+      "description": "完整集成测试验证前后端对接功能，包括正常流程和错误处理",
+      "source": ".sisyphus/plans/frontend-backend-integration-plan.md",
+      "priority": "p1",
+      "module": "frontend",
+      "phase": 6,
+      "steps": [
+        "启动后端服务 python -m src.main api --port 8000",
+        "启动前端服务 cd frontend && npm run dev",
+        "测试 Schema Explorer 正确加载表结构",
+        "测试自然语言查询生成 SQL 和结果",
+        "测试 SQL Preview 显示和操作",
+        "测试 Results Table 分页和排序",
+        "测试错误场景 (无效查询、网络错误)",
+        "运行 npm run lint 和 npm run build 验证"
+      ],
+      "files": [
+        "frontend/tests/test_integration.ts"
+      ],
+      "passes": false
     }
   ]
 }

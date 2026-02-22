@@ -3,12 +3,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export interface QueryRequest {
   question: string;
   database?: string;
+  include_sql?: boolean;
 }
 
 export interface QueryResponse {
-  sql: string;
-  results?: Record<string, unknown>[];
-  explanation?: string;
+  question: string;
+  result: unknown;
+  sql?: string;
+  status: string;
   error?: string;
 }
 
@@ -16,16 +18,20 @@ export interface TableListResponse {
   tables: string[];
 }
 
-export interface SchemaResponse {
+export interface SchemaColumn {
   name: string;
-  columns: {
-    name: string;
-    type: string;
-    nullable: boolean;
-    key: boolean;
-    default: string | null;
-    extra: string;
-  }[];
+  type: string;
+}
+
+export interface SchemaInfo {
+  table_name: string;
+  ddl: string;
+  columns: SchemaColumn[];
+}
+
+export interface SchemaResponse {
+  table: string;
+  schema: SchemaInfo;
 }
 
 class NL2SQLAPI {
