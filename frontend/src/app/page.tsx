@@ -70,19 +70,25 @@ export default function Home() {
           // We need to parse it to display in the table
           if (data?.execution_result) {
             const execResult = data.execution_result as string;
+            
+            // Get column names from execution stage if available
+            const columns = data.columns as string[] | undefined;
+            
             try {
               // Try to parse the string representation of tuples
               const parsed = execResult.replace(/\(/g, '[').replace(/\)/g, ']');
               const rows = JSON.parse(parsed) as unknown[][];
               if (Array.isArray(rows) && rows.length > 0) {
-                // Convert arrays to objects with generic column names
-                const maxCols = Math.max(...rows.map(r => Array.isArray(r) ? r.length : 0));
-                const columns = Array.from({ length: maxCols }, (_, i) => `column_${i}`);
+                // Use provided column names or generate generic ones
+                const columnNames = columns && columns.length > 0 
+                  ? columns 
+                  : Array.from({ length: Math.max(...rows.map(r => Array.isArray(r) ? r.length : 0)) }, (_, i) => `column_${i}`);
+                
                 const formattedResults = rows.map(row => {
                   const obj: Record<string, unknown> = {};
                   if (Array.isArray(row)) {
                     row.forEach((val, idx) => {
-                      obj[columns[idx]] = val;
+                      obj[columnNames[idx]] = val;
                     });
                   }
                   return obj;

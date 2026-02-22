@@ -213,6 +213,10 @@ class NL2SQLOrchestrator:
 
         try:
             execution_result = self._execute_sql(sql)
+            
+            # Get column names for the query
+            columns = self._get_column_names(sql)
+            
             yield {
                 "stage": "execution",
                 "status": "success" if execution_result.success else "error",
@@ -220,6 +224,7 @@ class NL2SQLOrchestrator:
                     "success": execution_result.success,
                     "result": execution_result.result,
                     "error": execution_result.error,
+                    "columns": columns,
                 },
                 "timestamp": time.time() - start_time
             }
@@ -317,6 +322,75 @@ class NL2SQLOrchestrator:
             attempts=exec_result.get("attempts", 1),
             execution_time=0.0
         )
+
+    def _get_column_names(self, sql: str) -> List[str]:
+        """Extract column names from SQL query result."""
+        try:
+            # Simple table name extraction from SELECT query
+            # Handle: SELECT * FROM table, SELECT col1, col2 FROM table, etc.
+            sql_lower = sql.lower()
+            
+            # Find table name after FROM keyword
+            from_idx = sql_lower.find(" from ")
+            if from_idx == -1:
+                return []
+            
+            # Get the part after FROM
+            after_from = sql[from_idx + 6:].strip()
+            
+            # Handle JOINs - get first table name
+            join_idx = after_from.find(" join ")
+            if join_idx > 0:
+                table_part = after_from[:join_idx].strip()
+            else:
+                # Handle WHERE, ORDER BY, etc.
+                for delimiter in [" where ", " order by ", " group by ", " limit ", " having "]:
+                    delim_idx = table_part.lower().find(delimiter) if 'table_part' in locals() else after_from.lower().find(delimiter)
+                    if delim_idx > 0:
+                        table_part = after_from[:delim_idx].strip()
+                        break
+                else:
+                    table_part = after_from.split()[0] if after_from else ""
+            
+            # Clean table name (remove aliases, quotes)
+            table_name = table_part.split()[0].strip('"`[]')
+            
+            # Get column info from database
+            if table_name:
+                # Use SQLDatabase's get_table_info to get columns
+                table_info = self.db.get_table_info([table_name])
+                # Parse DDL to extract column names
+                columns = self._parse_columns_from_ddl(table_info)
+                return columns
+            
+            return []
+        except Exception as e:
+            logging.warning(f"Failed to get column names: {e}")
+            return []
+
+    def _parse_columns_from_ddl(self, ddl: str) -> List[str]:
+        """Parse column names from DDL string."""
+        import re
+        columns = []
+        
+        # Match column definitions: column_name DATA_TYPE
+        # Pattern: identifier followed by type
+        pattern = r'^\s*(\w+)\s+\w+'
+        
+        for line in ddl.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#') or line.startswith('--'):
+                continue
+            if line.lower().startswith('create table') or line.lower().startswith(')'):
+                continue
+            
+            match = re.match(pattern, line)
+            if match:
+                col_name = match.group(1)
+                if col_name.lower() not in ['primary', 'foreign', 'unique', 'check', 'constraint']:
+                    columns.append(col_name)
+        
+        return columns
 
     def _explain_result(self, question: str, result: Any) -> str:
         explanation = self.result_explainer.explain(question, result)
