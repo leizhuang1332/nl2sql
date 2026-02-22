@@ -967,7 +967,7 @@
       "files": [
         "frontend/.env.local"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 48,

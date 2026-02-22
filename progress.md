@@ -1,3 +1,21 @@
+## 2026-02-22 - Frontend-Backend Integration Phase 5: 环境变量配置
+
+### What was done:
+- 创建 frontend/.env.local 文件
+- 配置 NEXT_PUBLIC_API_URL=http://localhost:8000
+- 验证后端 CORS 配置正确 (默认允许所有源)
+- 验证前端 api.ts 正确读取环境变量
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+
+### Notes:
+- Feature 47 (Frontend-Backend Integration Phase 5) completed
+- passes set to true in feature_list.json
+
+---
+
 ## 2026-02-22 - Frontend-Backend Integration Phase 4: 流式响应支持
 
 ### What was done:
