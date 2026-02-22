@@ -1,5 +1,8 @@
 import json
-from typing import Any, Dict, List, Optional, Union
+import logging
+from typing import Any, Dict, List, Optional, Union, Generator
+
+logger = logging.getLogger(__name__)
 
 
 class ResultExplainer:
@@ -19,6 +22,35 @@ class ResultExplainer:
             return self._explain_simple(question, parsed_result)
         else:
             return self._explain_complex(question, parsed_result, format)
+
+    def explain_stream(
+        self,
+        question: str,
+        result: Any,
+        format: str = "text"
+    ) -> Generator[str, None, None]:
+        parsed_result = self._parse_result(result)
+
+        if self._is_simple_result(parsed_result):
+            explanation = self._explain_simple(question, parsed_result)
+            yield explanation
+            return
+
+        if self.llm is None:
+            fallback = self._fallback_explain(parsed_result)
+            yield fallback
+            return
+
+        try:
+            prompt = self._build_explain_prompt(question, parsed_result, format)
+
+            for chunk in self.llm.stream(prompt):
+                content = chunk.content if hasattr(chunk, 'content') else str(chunk)
+                yield content
+
+        except Exception as e:
+            logger.error(f"结果解释流式生成失败: {e}")
+            yield self._fallback_explain(parsed_result)
 
     def _parse_result(self, result: Any) -> Union[List[Dict], Dict, str]:
         if isinstance(result, str):

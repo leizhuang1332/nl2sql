@@ -8,6 +8,7 @@ def create_llm(
     api_key: str = None,
     base_url: str = None,
     temperature: float = 0,
+    stream: bool = False,
     **kwargs: Any
 ) -> Any:
     if provider == "minimax":
@@ -17,6 +18,7 @@ def create_llm(
             api_key=api_key,
             base_url=base_url or "https://api.minimaxi.com/anthropic",
             temperature=temperature if temperature > 0 else 1.0,
+            streaming=stream,
             **kwargs
         )
 
@@ -25,6 +27,7 @@ def create_llm(
             model=model or "gpt-4",
             api_key=api_key,
             temperature=temperature,
+            streaming=stream,
             **kwargs
         )
 
@@ -34,6 +37,7 @@ def create_llm(
             model=model or "claude-3-opus-20240229",
             api_key=api_key,
             temperature=temperature,
+            streaming=stream,
             **kwargs
         )
 
@@ -51,6 +55,7 @@ def create_llm(
             api_key=api_key,
             base_url=base_url,
             temperature=temperature,
+            streaming=stream,
             **kwargs
         )
 
@@ -68,6 +73,7 @@ class LLMFactory:
         api_key: str = None,
         base_url: str = None,
         temperature: float = 0,
+        stream: bool = False,
         **kwargs: Any
     ) -> Any:
         return create_llm(
@@ -76,5 +82,6 @@ class LLMFactory:
             api_key=api_key,
             base_url=base_url,
             temperature=temperature,
+            stream=stream,
             **kwargs
         )

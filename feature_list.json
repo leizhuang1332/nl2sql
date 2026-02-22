@@ -684,6 +684,39 @@
         "tests/test_config.py"
       ],
       "passes": true
+    },
+    {
+      "id": 35,
+      "title": "CLI & API 流式响应支持",
+      "description": "为 CLI 和 REST API 增加流式响应支持，支持实时获取查询进度和中间结果",
+      "source": ".sisyphus/plans/streaming-response-plan.md",
+      "priority": "p1",
+      "module": "core",
+      "phase": 6,
+      "steps": [
+        "修改 LLM Factory 添加 stream 参数到 create_llm() 函数",
+        "在 SQLGenerator 新增 generate_stream() 方法，使用 LangChain .stream() API",
+        "在 ResultExplainer 新增 explain_stream() 方法，流式解释查询结果",
+        "在 Orchestrator 新增 ask_stream() 方法，分阶段 yield 流式数据",
+        "在 CLI run_cli() 函数添加 --stream 参数支持流式输出",
+        "在 REST API 新增 /query/stream 端点，使用 SSE (Server-Sent Events) 流式响应",
+        "添加单元测试验证各模块流式功能",
+        "添加集成测试验证 CLI --stream 参数",
+        "添加集成测试验证 API /query/stream 端点"
+      ],
+      "files": [
+        "src/generation/llm_factory.py",
+        "src/generation/sql_generator.py",
+        "src/explanation/result_explainer.py",
+        "src/core/orchestrator.py",
+        "src/main.py",
+        "tests/test_llm_factory_stream.py",
+        "tests/test_sql_generator_stream.py",
+        "tests/test_orchestrator_stream.py",
+        "tests/test_cli_stream.py",
+        "tests/test_api_stream.py"
+      ],
+      "passes": false
     }
   ]
 }

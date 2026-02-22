@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Generator
 import time
 import logging
 
@@ -132,6 +132,146 @@ class NL2SQLOrchestrator:
             result.metadata["execution_time"] = time.time() - start_time
 
         return result
+
+    def ask_stream(self, question: str) -> Generator[Dict[str, Any], None, None]:
+        start_time = time.time()
+
+        try:
+            mapping = self._semantic_mapping(question)
+            yield {
+                "stage": "mapping",
+                "status": "success",
+                "data": {
+                    "enhanced_question": mapping.enhanced_question,
+                    "field_mappings": mapping.field_mappings,
+                },
+                "timestamp": time.time() - start_time
+            }
+        except Exception as e:
+            yield {"stage": "mapping", "status": "error", "error": str(e)}
+            return
+
+        try:
+            schema_doc = self._prepare_schema()
+            yield {
+                "stage": "schema",
+                "status": "success",
+                "data": {"schema": schema_doc[:500] + "..."},
+                "timestamp": time.time() - start_time
+            }
+        except Exception as e:
+            yield {"stage": "schema", "status": "error", "error": str(e)}
+            return
+
+        try:
+            sql_chunks = []
+            for chunk in self.sql_generator.generate_stream(schema_doc, mapping.enhanced_question):
+                sql_chunks.append(chunk)
+                yield {
+                    "stage": "sql_generating",
+                    "status": "streaming",
+                    "chunk": chunk,
+                    "timestamp": time.time() - start_time
+                }
+
+            sql = "".join(sql_chunks)
+            sql = self.sql_generator._clean_sql(sql)
+
+            yield {
+                "stage": "sql_generated",
+                "status": "success",
+                "data": {"sql": sql},
+                "timestamp": time.time() - start_time
+            }
+        except Exception as e:
+            yield {"stage": "sql_generating", "status": "error", "error": str(e)}
+            return
+
+        try:
+            security_result = self._validate_security(sql)
+            yield {
+                "stage": "security",
+                "status": "success" if security_result.is_valid else "rejected",
+                "data": {
+                    "is_valid": security_result.is_valid,
+                    "message": security_result.message,
+                },
+                "timestamp": time.time() - start_time
+            }
+
+            if not security_result.is_valid:
+                yield {
+                    "stage": "done",
+                    "status": "security_rejected",
+                    "error": security_result.message,
+                    "timestamp": time.time() - start_time
+                }
+                return
+        except Exception as e:
+            yield {"stage": "security", "status": "error", "error": str(e)}
+            return
+
+        try:
+            execution_result = self._execute_sql(sql)
+            yield {
+                "stage": "execution",
+                "status": "success" if execution_result.success else "error",
+                "data": {
+                    "success": execution_result.success,
+                    "result": execution_result.result,
+                    "error": execution_result.error,
+                },
+                "timestamp": time.time() - start_time
+            }
+
+            if not execution_result.success:
+                yield {
+                    "stage": "done",
+                    "status": "execution_error",
+                    "error": execution_result.error,
+                    "timestamp": time.time() - start_time
+                }
+                return
+        except Exception as e:
+            yield {"stage": "execution", "status": "error", "error": str(e)}
+            return
+
+        try:
+            explanation_chunks = []
+            for chunk in self.result_explainer.explain_stream(
+                question,
+                execution_result.result
+            ):
+                explanation_chunks.append(chunk)
+                yield {
+                    "stage": "explaining",
+                    "status": "streaming",
+                    "chunk": chunk,
+                    "timestamp": time.time() - start_time
+                }
+
+            explanation = "".join(explanation_chunks)
+
+            yield {
+                "stage": "explained",
+                "status": "success",
+                "data": {"explanation": explanation},
+                "timestamp": time.time() - start_time
+            }
+        except Exception as e:
+            yield {"stage": "explaining", "status": "error", "error": str(e)}
+
+        yield {
+            "stage": "done",
+            "status": "success",
+            "data": {
+                "question": question,
+                "sql": sql,
+                "execution_result": execution_result.result,
+                "explanation": explanation if 'explanation' in locals() else None,
+            },
+            "timestamp": time.time() - start_time
+        }
 
     def _semantic_mapping(self, question: str) -> MappingResult:
         enhanced_question, mapping_info = self.semantic_mapper.map(question)

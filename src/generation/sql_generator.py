@@ -1,6 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Generator
 import logging
 
 logger = logging.getLogger(__name__)
@@ -24,6 +24,27 @@ class SQLGenerator:
         except Exception as e:
             logger.error(f"SQL 生成失败: {e}")
             raise
+
+    def generate_stream(self, schema: str, question: str) -> Generator[str, None, None]:
+        """流式生成 SQL
+        
+        Args:
+            schema: 数据库 Schema 文档
+            question: 用户问题
+            
+        Yields:
+            SQL 片段（逐步返回）
+        """
+        try:
+            chain = self.prompt_template | self.llm | self.output_parser
+            
+            # 使用 stream() 而非 invoke()
+            for chunk in chain.stream({"schema": schema, "question": question}):
+                yield chunk
+                
+        except Exception as e:
+            logger.error(f"SQL 流式生成失败: {e}")
+            yield f"[ERROR] {str(e)}"
 
     def _get_default_template(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_template("""

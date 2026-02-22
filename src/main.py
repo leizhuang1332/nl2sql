@@ -6,11 +6,13 @@ Provides CLI and FastAPI dual-mode entry.
 import argparse
 import logging
 import sys
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from .config import Settings, get_settings
@@ -22,6 +24,11 @@ logger = logging.getLogger(__name__)
 
 
 class QueryRequest(BaseModel):
+    question: str
+    include_sql: bool = False
+
+
+class StreamQueryRequest(BaseModel):
     question: str
     include_sql: bool = False
 
@@ -104,21 +111,61 @@ def run_cli(args: argparse.Namespace, settings: Settings) -> None:
             print("Run: pip install langchain-anthropic")
             sys.exit(1)
         
-        result = orchestrator.ask(args.question)
-        
-        if result.status.value == "success":
-            print(f"\nQuestion: {result.question}")
-            if args.show_sql and result.sql:
-                print(f"\nSQL: {result.sql}")
-            if result.execution and result.execution.result:
-                print(f"\nResult: {result.execution.result}")
-            if result.explanation:
-                print(f"\nExplanation: {result.explanation}")
+        if getattr(args, 'stream', False):
+            print(f"\nQuestion: {args.question}")
+            print("-" * 50)
+            
+            for chunk in orchestrator.ask_stream(args.question):
+                stage = chunk.get("stage")
+                status = chunk.get("status")
+                
+                if stage == "mapping" and status == "success":
+                    print(f"[1/6] 语义映射: ✓")
+                    
+                elif stage == "schema" and status == "success":
+                    print(f"[2/6] Schema 准备: ✓")
+                    
+                elif stage == "sql_generating" and status == "streaming":
+                    print(f"[3/6] SQL 生成: {chunk.get('chunk')}", end="", flush=True)
+                    
+                elif stage == "sql_generated" and status == "success":
+                    print(f"\n[3/6] SQL 生成完成: {chunk['data']['sql']}")
+                    if args.show_sql:
+                        print(f"SQL: {chunk['data']['sql']}")
+                    
+                elif stage == "security" and status == "success":
+                    print(f"[4/6] 安全验证: ✓")
+                    
+                elif stage == "execution" and status == "success":
+                    print(f"[5/6] SQL 执行: ✓")
+                    if chunk['data'].get('result'):
+                        print(f"结果: {chunk['data']['result']}")
+                    
+                elif stage == "explaining" and status == "streaming":
+                    print(f"[6/6] 解释: {chunk.get('chunk')}", end="", flush=True)
+                    
+                elif stage == "explained" and status == "success":
+                    print(f"\n[6/6] 解释完成")
+                    
+                elif stage == "done" and status == "success":
+                    print("-" * 50)
+                    print("完成!")
         else:
-            print(f"Error: {result.status.value}")
-            if result.error_message:
-                print(f"Details: {result.error_message}")
-            sys.exit(1)
+            result = orchestrator.ask(args.question)
+            
+            if result.status.value == "success":
+                print(f"\nQuestion: {result.question}")
+                if args.show_sql and result.sql:
+                    print(f"\nSQL: {result.sql}")
+                if result.execution and result.execution.result:
+                    print(f"\nResult: {result.execution.result}")
+                if result.explanation:
+                    print(f"\nExplanation: {result.explanation}")
+            else:
+                print(f"Error: {result.status.value}")
+                if result.error_message:
+                    print(f"Details: {result.error_message}")
+                sys.exit(1)
         return
     
     print(f"Unknown command: {args.command}")
@@ -188,6 +235,50 @@ def create_app(settings: Optional[Settings] = None) -> FastAPI:
             logger.exception("Query execution failed")
             raise HTTPException(status_code=500, detail=str(e))
     
+    @app.post("/query/stream")
+    async def query_stream(request: StreamQueryRequest, http_request: Request) -> StreamingResponse:
+        async def event_generator():
+            try:
+                orchestrator = create_orchestrator(settings)
+                
+                for chunk in orchestrator.ask_stream(request.question):
+                    data = {
+                        "stage": chunk.get("stage"),
+                        "status": chunk.get("status"),
+                        "timestamp": chunk.get("timestamp"),
+                    }
+                    
+                    if "data" in chunk:
+                        data["data"] = chunk["data"]
+                    if "chunk" in chunk:
+                        data["chunk"] = chunk["chunk"]
+                    if "error" in chunk:
+                        data["error"] = chunk["error"]
+                    
+                    yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+                    
+                    if await http_request.is_disconnected():
+                        break
+                        
+            except Exception as e:
+                logger.exception("流式查询失败")
+                error_data = json.dumps({
+                    "stage": "error",
+                    "status": "error",
+                    "error": str(e)
+                }, ensure_ascii=False)
+                yield f"data: {error_data}\n\n"
+        
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            }
+        )
+    
     return app
 
 
@@ -225,6 +316,7 @@ def main():
     query_parser = cli_subparsers.add_parser("query", help="Execute query")
     query_parser.add_argument("question", type=str, help="Natural language question")
     query_parser.add_argument("--show-sql", action="store_true", help="Show generated SQL")
+    query_parser.add_argument("--stream", action="store_true", help="Stream output results")
     query_parser.set_defaults(command="query")
     
     api_parser = subparsers.add_parser("api", help="API mode")

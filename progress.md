@@ -1,3 +1,27 @@
+## 2026-02-22 - 流式响应支持 (Streaming Response)
+ Added streaming support to CLI and REST API for real-time progress updates
+ Modified src/generation/llm_factory.py:
+  - Added `stream` parameter to `create_llm()` and `LLMFactory.create()`
+ Modified src/generation/sql_generator.py:
+  - Added `generate_stream()` method using LangChain `.stream()` API
+ Modified src/explanation/result_explainer.py:
+  - Added `explain_stream()` method for streaming result explanation
+ Modified src/core/orchestrator.py:
+  - Added `ask_stream()` method with 6-stage streaming (mapping → schema → sql → security → execution → explaining → done)
+ Modified src/main.py:
+  - Added CLI `--stream` flag for streaming output
+  - Added REST API `/query/stream` endpoint with Server-Sent Events (SSE)
+ Created implementation plan at .sisyphus/plans/streaming-response-plan.md
+ Python syntax verified (py_compile)
+ All files compile without syntax errors
+ CLI usage: `python -m src.main cli query "查询所有产品" --stream`
+ API usage: `curl -N -X POST http://localhost:8000/query/stream -H "Content-Type: application/json" -d '{"question": "查询所有产品"}'`
+ SSE format: `data: {"stage": "...", "status": "..."}\n\n`
+ Uses LangChain's `.stream()` method for real-time token streaming
+ Added to feature_list.json as Task 35
+---
+
+
 # Progress Log
 
 ## 2026-02-19 - CLI & API Phase 2: 配置系统增强
