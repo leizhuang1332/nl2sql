@@ -30,7 +30,7 @@ interface TreeNode {
   icon?: React.ReactNode;
 }
 
-export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading: externalLoading = false }) => {
+export const SchemaExplorer: React.FC<SchemaExplorerProps> = React.memo(({ loading: externalLoading = false }) => {
   const [searchValue, setSearchValue] = useState('');
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [tables, setTables] = useState<TableData[]>([]);
@@ -168,6 +168,6 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading: externa
       </div>
     </div>
   );
-};
+});
 
 export default SchemaExplorer;
