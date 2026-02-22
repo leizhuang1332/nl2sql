@@ -1,3 +1,26 @@
+## 2026-02-22 - Frontend-Backend Integration Phase 2: Schema Explorer 对接
+
+### What was done:
+- 重写 SchemaExplorer.tsx 组件，对接后端 API:
+  - 移除 mock 数据，添加 useEffect 在组件挂载时加载数据
+  - 调用 nl2sqlApi.getTables() 获取表列表
+  - 遍历表名调用 nl2sqlApi.getSchema() 获取每个表的结构
+  - 使用 Promise.all 并行请求所有表的 schema
+  - 处理加载状态 (isLoading)
+  - 处理错误状态 (error)，显示错误信息
+  - 处理空状态 (Empty 组件)
+  - 支持搜索过滤功能
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+
+### Notes:
+- Feature 44 (Frontend-Backend Integration Phase 2) completed
+- passes set to true in feature_list.json
+
+---
+
 ## 2026-02-22 - Frontend Phase 6 & 7: HybridLayout + API 集成
 
 ### What was done:

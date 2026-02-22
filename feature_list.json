@@ -906,7 +906,7 @@
       "files": [
         "frontend/src/components/nl2sql/SchemaExplorer.tsx"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 45,

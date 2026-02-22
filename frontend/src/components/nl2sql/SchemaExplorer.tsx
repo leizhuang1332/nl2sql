@@ -1,73 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Tree, Input, Typography, Spin } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Tree, Input, Typography, Spin, Empty } from 'antd';
 import { 
   DatabaseOutlined, 
   TableOutlined, 
   ColumnWidthOutlined,
   SearchOutlined,
-  LoadingOutlined
+  LoadingOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons';
+import { nl2sqlApi } from '@/lib/api';
 
 const { Text } = Typography;
 
-// Types
-interface ColumnInfo {
+interface TableData {
   name: string;
-  type: string;
-  nullable: boolean;
-  key: boolean;
-  default: string | null;
-  extra: string;
+  columns: { name: string; type: string }[];
 }
-
-interface TableInfo {
-  name: string;
-  columns: ColumnInfo[];
-}
-
-interface SchemaData {
-  tables: TableInfo[];
-  tableNames: string[];
-}
-
-// Mock data - should be fetched from API
-const mockSchemaData: SchemaData = {
-  tables: [
-    {
-      name: 'products',
-      columns: [
-        { name: 'id', type: 'INTEGER', nullable: false, key: true, default: null, extra: 'AUTOINCREMENT' },
-        { name: 'name', type: 'VARCHAR(255)', nullable: false, key: false, default: null, extra: '' },
-        { name: 'price', type: 'DECIMAL(10,2)', nullable: false, key: false, default: null, extra: '' },
-        { name: 'category', type: 'VARCHAR(100)', nullable: true, key: false, default: null, extra: '' },
-        { name: 'stock', type: 'INTEGER', nullable: false, key: false, default: '0', extra: '' },
-        { name: 'created_at', type: 'DATETIME', nullable: false, key: false, default: 'CURRENT_TIMESTAMP', extra: '' },
-      ],
-    },
-    {
-      name: 'orders',
-      columns: [
-        { name: 'id', type: 'INTEGER', nullable: false, key: true, default: null, extra: 'AUTOINCREMENT' },
-        { name: 'user_id', type: 'INTEGER', nullable: false, key: false, default: null, extra: '' },
-        { name: 'total_amount', type: 'DECIMAL(10,2)', nullable: false, key: false, default: null, extra: '' },
-        { name: 'status', type: 'VARCHAR(50)', nullable: false, key: false, default: "'pending'", extra: '' },
-        { name: 'created_at', type: 'DATETIME', nullable: false, key: false, default: 'CURRENT_TIMESTAMP', extra: '' },
-      ],
-    },
-    {
-      name: 'users',
-      columns: [
-        { name: 'id', type: 'INTEGER', nullable: false, key: true, default: null, extra: 'AUTOINCREMENT' },
-        { name: 'username', type: 'VARCHAR(100)', nullable: false, key: false, default: null, extra: '' },
-        { name: 'email', type: 'VARCHAR(255)', nullable: false, key: false, default: null, extra: '' },
-        { name: 'created_at', type: 'DATETIME', nullable: false, key: false, default: 'CURRENT_TIMESTAMP', extra: '' },
-      ],
-    },
-  ],
-  tableNames: ['products', 'orders', 'users'],
-};
 
 interface SchemaExplorerProps {
   loading?: boolean;
@@ -80,14 +30,54 @@ interface TreeNode {
   icon?: React.ReactNode;
 }
 
-export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading = false }) => {
+export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading: externalLoading = false }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [expandedKeys, setExpandedKeys] = useState<string[]>(['products', 'orders', 'users']);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [tables, setTables] = useState<TableData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadSchema = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const tableList = await nl2sqlApi.getTables();
+      const tableNames = tableList.tables;
+      
+      const tableDataPromises = tableNames.map(async (tableName) => {
+        try {
+          const schemaResponse = await nl2sqlApi.getSchema(tableName);
+          return {
+            name: tableName,
+            columns: schemaResponse.schema.columns || []
+          };
+        } catch {
+          return {
+            name: tableName,
+            columns: []
+          };
+        }
+      });
+
+      const tableData = await Promise.all(tableDataPromises);
+      setTables(tableData);
+      setExpandedKeys(tableNames);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load schema');
+      console.error('Failed to load schema:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSchema();
+  }, [loadSchema]);
 
   const buildTreeData = (): TreeNode[] => {
     const data: TreeNode[] = [];
     
-    mockSchemaData.tables.forEach((table) => {
+    tables.forEach((table) => {
       if (searchValue && !table.name.toLowerCase().includes(searchValue.toLowerCase())) {
         return;
       }
@@ -104,7 +94,6 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading = false 
               <ColumnWidthOutlined className="text-xs text-blue-400" />
               <Text code className="text-xs text-slate-400">{col.type}</Text>
               <Text className="text-sm text-slate-200">{col.name}</Text>
-              {col.key && <span className="text-xs text-yellow-400 font-medium">PK</span>}
             </div>
           ),
         }));
@@ -129,16 +118,17 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading = false 
     setExpandedKeys(keys as string[]);
   };
 
+  const isLoadingFinal = externalLoading || isLoading;
+  const totalColumns = tables.reduce((acc, t) => acc + t.columns.length, 0);
+
   return (
     <div className="h-full flex flex-col bg-slate-900">
-      {/* Header */}
       <div className="p-3 border-b border-slate-700">
         <div className="flex items-center gap-2 mb-3">
           <DatabaseOutlined className="text-lg text-green-400" />
           <Text strong className="text-slate-200">Schema Explorer</Text>
         </div>
         
-        {/* Search */}
         <Input
           prefix={<SearchOutlined className="text-slate-400" />}
           placeholder="Search tables or columns..."
@@ -146,15 +136,22 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading = false 
           onChange={(e) => setSearchValue(e.target.value)}
           className="bg-slate-800 border-slate-700 text-slate-200"
           allowClear
+          disabled={isLoadingFinal}
         />
       </div>
 
-      {/* Tree */}
       <div className="flex-1 overflow-auto p-2">
-        {loading ? (
+        {isLoadingFinal ? (
           <div className="flex items-center justify-center h-32">
             <Spin indicator={<LoadingOutlined spin className="text-green-400" />} />
           </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-32 text-center">
+            <ExclamationCircleOutlined className="text-red-400 text-xl mb-2" />
+            <Text type="secondary" className="text-xs text-red-400">{error}</Text>
+          </div>
+        ) : tables.length === 0 ? (
+          <Empty description="No tables found" className="text-slate-400" />
         ) : (
           <Tree
             showIcon
@@ -166,9 +163,8 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = ({ loading = false 
         )}
       </div>
 
-      {/* Footer */}
       <div className="p-2 border-t border-slate-700 text-xs text-slate-400">
-        {mockSchemaData.tableNames.length} tables • {mockSchemaData.tables.reduce((acc, t) => acc + t.columns.length, 0)} columns
+        {tables.length} tables • {totalColumns} columns
       </div>
     </div>
   );
