@@ -1,3 +1,29 @@
+## 2026-02-22 - Frontend-Backend Integration Phase 4: 流式响应支持
+
+### What was done:
+- 在 api.ts 添加流式请求方法 queryStream():
+  - 新增 StreamChunk 和 StreamCallback 类型定义
+  - 实现 SSE (Server-Sent Events) 消费逻辑
+  - 支持分块接收流式数据
+- 修改 QueryInput 组件支持流式输出:
+  - 新增 streaming, streamStage, streamProgress props
+  - 添加阶段进度显示 (语义映射 → Schema准备 → SQL生成 → 安全验证 → 执行 → 解释 → 完成)
+  - 添加 Progress 进度条和阶段 Tag 显示
+- 修改 page.tsx 使用流式 API:
+  - 使用 nl2sqlApi.queryStream() 替代 nl2sqlApi.query()
+  - 实现 onChunk, onComplete, onError 回调处理
+  - 分阶段更新 UI 状态
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+
+### Notes:
+- Feature 46 (Frontend-Backend Integration Phase 4) completed
+- passes set to true in feature_list.json
+
+---
+
 ## 2026-02-22 - Frontend-Backend Integration Phase 3: 查询功能对接
 
 ### What was done:

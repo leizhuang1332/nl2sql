@@ -948,7 +948,7 @@
         "frontend/src/components/nl2sql/QueryInput.tsx",
         "frontend/tests/test_stream.ts"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 47,

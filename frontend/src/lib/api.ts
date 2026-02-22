@@ -14,6 +14,17 @@ export interface QueryResponse {
   error?: string;
 }
 
+export interface StreamChunk {
+  stage?: string;
+  status?: string;
+  sql?: string;
+  result?: unknown;
+  error?: string;
+  explanation?: string;
+}
+
+export type StreamCallback = (chunk: StreamChunk) => void;
+
 export interface TableListResponse {
   tables: string[];
 }
@@ -77,6 +88,86 @@ class NL2SQLAPI {
 
   async health(): Promise<{ status: string }> {
     return this.request<{ status: string }>('/health');
+  }
+
+  async queryStream(
+    request: QueryRequest,
+    onChunk: StreamCallback,
+    onComplete?: () => void,
+    onError?: (error: Error) => void
+  ): Promise<void> {
+    const url = `${this.baseUrl}/query/stream`;
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'Request failed' }));
+        throw new Error(error.detail || `HTTP ${response.status}`);
+      }
+
+      if (!response.body) {
+        throw new Error('Response body is null');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) {
+          // Process any remaining data in buffer
+          if (buffer.trim()) {
+            try {
+              const chunk = JSON.parse(buffer.trim());
+              onChunk(chunk);
+            } catch {
+              // Ignore parsing errors for incomplete chunks
+            }
+          }
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Split by SSE format: each line starts with "data: "
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (trimmedLine.startsWith('data: ')) {
+            const data = trimmedLine.slice(6); // Remove "data: " prefix
+            if (data.trim() === '[DONE]') {
+              if (onComplete) onComplete();
+              return;
+            }
+            try {
+              const chunk = JSON.parse(data);
+              onChunk(chunk);
+            } catch {
+              // Skip invalid JSON
+            }
+          }
+        }
+      }
+
+      if (onComplete) onComplete();
+    } catch (error) {
+      if (onError && error instanceof Error) {
+        onError(error);
+      } else if (onError) {
+        onError(new Error('Unknown error occurred'));
+      }
+    }
   }
 }
 

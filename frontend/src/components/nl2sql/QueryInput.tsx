@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Input, Button } from 'antd';
-import { SendOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Input, Button, Progress, Tag } from 'antd';
+import { SendOutlined, LoadingOutlined, CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
@@ -10,12 +10,38 @@ interface QueryInputProps {
   onSubmit: (query: string) => void;
   loading?: boolean;
   disabled?: boolean;
+  streaming?: boolean;
+  streamStage?: string;
+  streamProgress?: number;
 }
+
+const STAGE_LABELS: Record<string, string> = {
+  semantic_mapping: '语义映射',
+  schema_prep: 'Schema 准备',
+  sql_generation: 'SQL 生成',
+  security: '安全验证',
+  execution: '执行查询',
+  explaining: '结果解释',
+  done: '完成',
+};
+
+const STAGE_COLORS: Record<string, string> = {
+  semantic_mapping: 'blue',
+  schema_prep: 'cyan',
+  sql_generation: 'green',
+  security: 'orange',
+  execution: 'purple',
+  explaining: 'magenta',
+  done: 'green',
+};
 
 export const QueryInput: React.FC<QueryInputProps> = ({ 
   onSubmit, 
   loading = false,
-  disabled = false 
+  disabled = false,
+  streaming = false,
+  streamStage,
+  streamProgress,
 }) => {
   const [value, setValue] = useState('');
 
@@ -31,8 +57,43 @@ export const QueryInput: React.FC<QueryInputProps> = ({
     }
   };
 
+  const currentStageLabel = streamStage ? STAGE_LABELS[streamStage] || streamStage : '';
+  const currentStageColor = streamStage ? STAGE_COLORS[streamStage] || 'default' : 'default';
+
   return (
     <div className="flex flex-col gap-3">
+      {streaming && (
+        <div className="bg-slate-800 rounded-lg p-3 border border-slate-700">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              {loading ? (
+                <SyncOutlined spin className="text-green-400" />
+              ) : (
+                <CheckCircleOutlined className="text-green-400" />
+              )}
+              <span className="text-sm text-slate-300">处理阶段:</span>
+              {currentStageLabel && (
+                <Tag color={currentStageColor}>{currentStageLabel}</Tag>
+              )}
+            </div>
+            {streamProgress !== undefined && (
+              <span className="text-sm text-slate-400">{streamProgress}%</span>
+            )}
+          </div>
+          {streamProgress !== undefined && (
+            <Progress 
+              percent={streamProgress} 
+              size="small" 
+              status={loading ? 'active' : 'success'}
+              strokeColor={{
+                '0%': '#108ee9',
+                '100%': '#87d068',
+              }}
+            />
+          )}
+        </div>
+      )}
+
       <TextArea
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -51,7 +112,7 @@ export const QueryInput: React.FC<QueryInputProps> = ({
           disabled={disabled || !value.trim()}
           className="bg-green-500 hover:bg-green-600 border-green-500"
         >
-          {loading ? 'Processing...' : 'Generate SQL'}
+          {loading ? (streaming ? '处理中...' : '生成中...') : 'Generate SQL'}
         </Button>
       </div>
     </div>

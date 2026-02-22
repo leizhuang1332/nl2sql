@@ -8,7 +8,7 @@ import QueryInput from '@/components/nl2sql/QueryInput';
 import SQLPreview from '@/components/nl2sql/SQLPreview';
 import ResultsTable from '@/components/nl2sql/ResultsTable';
 import HybridLayout from '@/components/nl2sql/HybridLayout';
-import { nl2sqlApi } from '@/lib/api';
+import { nl2sqlApi, StreamChunk } from '@/lib/api';
 
 interface HistoryItem {
   id: string;
@@ -16,6 +16,16 @@ interface HistoryItem {
   sql: string;
   timestamp: Date;
 }
+
+const STAGE_PROGRESS: Record<string, number> = {
+  semantic_mapping: 16,
+  schema_prep: 33,
+  sql_generation: 50,
+  security: 66,
+  execution: 83,
+  explaining: 95,
+  done: 100,
+};
 
 export default function Home() {
   const { message } = App.useApp();
@@ -25,47 +35,68 @@ export default function Home() {
   const [results, setResults] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  
+  const [streaming, setStreaming] = useState(false);
+  const [streamStage, setStreamStage] = useState<string>('');
+  const [streamProgress, setStreamProgress] = useState<number>(0);
 
   const handleQuerySubmit = async (question: string) => {
     setQuery(question);
     setLoading(true);
     setSql('');
     setResults([]);
+    setStreaming(true);
+    setStreamStage('semantic_mapping');
+    setStreamProgress(0);
     
     try {
-      const response = await nl2sqlApi.query({
-        question,
-        include_sql: true
-      });
-
-      if (response.status === 'success') {
-        setSql(response.sql || '');
-        
-        if (response.result && Array.isArray(response.result)) {
-          setResults(response.result as Record<string, unknown>[]);
-        } else if (response.result) {
-          setResults([response.result as Record<string, unknown>]);
-        } else {
-          setResults([]);
-        }
-
-        const newHistory: HistoryItem = {
-          id: Date.now().toString(),
+      await nl2sqlApi.queryStream(
+        {
           question,
-          sql: response.sql || '',
-          timestamp: new Date(),
-        };
-        setHistory(prev => [newHistory, ...prev]);
-        
-        message.success('Query executed successfully!');
-      } else {
-        message.error(response.error || 'Query failed');
-      }
+          include_sql: true
+        },
+        (chunk: StreamChunk) => {
+          if (chunk.stage) {
+            setStreamStage(chunk.stage);
+            setStreamProgress(STAGE_PROGRESS[chunk.stage] || 0);
+          }
+          if (chunk.sql) {
+            setSql(chunk.sql);
+          }
+          if (chunk.result) {
+            if (Array.isArray(chunk.result)) {
+              setResults(chunk.result as Record<string, unknown>[]);
+            } else {
+              setResults([chunk.result as Record<string, unknown>]);
+            }
+          }
+        },
+        () => {
+          setLoading(false);
+          setStreaming(false);
+          setStreamStage('done');
+          setStreamProgress(100);
+          
+          const newHistory: HistoryItem = {
+            id: Date.now().toString(),
+            question,
+            sql: sql,
+            timestamp: new Date(),
+          };
+          setHistory(prev => [newHistory, ...prev]);
+          message.success('Query executed successfully!');
+        },
+        (error: Error) => {
+          setLoading(false);
+          setStreaming(false);
+          message.error(error.message || 'Failed to execute query');
+        }
+      );
     } catch (error) {
+      setLoading(false);
+      setStreaming(false);
       message.error('Failed to execute query');
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -90,6 +121,9 @@ export default function Home() {
         onSubmit={handleQuerySubmit} 
         loading={loading}
         disabled={loading}
+        streaming={streaming}
+        streamStage={streamStage}
+        streamProgress={streamProgress}
       />
       
       <SQLPreview 
