@@ -56,18 +56,42 @@ export default function Home() {
           include_sql: true
         },
         (chunk: StreamChunk) => {
+          // Handle nested data structure from backend
+          const data = chunk.data as Record<string, unknown> | undefined;
+          
           if (chunk.stage) {
             setStreamStage(chunk.stage);
             setStreamProgress(STAGE_PROGRESS[chunk.stage] || 0);
           }
-          if (chunk.sql) {
-            setSql(chunk.sql);
+          if (data?.sql) {
+            setSql(data.sql as string);
           }
-          if (chunk.result) {
-            if (Array.isArray(chunk.result)) {
-              setResults(chunk.result as Record<string, unknown>[]);
-            } else {
-              setResults([chunk.result as Record<string, unknown>]);
+          // execution_result is returned as a string in the format "[(...), (...)]"
+          // We need to parse it to display in the table
+          if (data?.execution_result) {
+            const execResult = data.execution_result as string;
+            try {
+              // Try to parse the string representation of tuples
+              const parsed = execResult.replace(/\(/g, '[').replace(/\)/g, ']');
+              const rows = JSON.parse(parsed) as unknown[][];
+              if (Array.isArray(rows) && rows.length > 0) {
+                // Convert arrays to objects with generic column names
+                const maxCols = Math.max(...rows.map(r => Array.isArray(r) ? r.length : 0));
+                const columns = Array.from({ length: maxCols }, (_, i) => `column_${i}`);
+                const formattedResults = rows.map(row => {
+                  const obj: Record<string, unknown> = {};
+                  if (Array.isArray(row)) {
+                    row.forEach((val, idx) => {
+                      obj[columns[idx]] = val;
+                    });
+                  }
+                  return obj;
+                });
+                setResults(formattedResults);
+              }
+            } catch {
+              // If parsing fails, just set the raw result
+              setResults([{ result: execResult }] as Record<string, unknown>[]);
             }
           }
         },

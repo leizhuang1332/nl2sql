@@ -1,3 +1,31 @@
+## 2026-02-22 - Frontend-Backend Integration Phase 6: 集成测试验证
+
+### What was done:
+- 修复前端流式响应解析问题:
+  - 修复 api.ts StreamChunk 接口添加 data 字段支持嵌套数据
+  - 修复 page.tsx 流式回调处理: 从 chunk.data 获取 sql 和 execution_result
+  - 修复 execution_result 解析逻辑: 将元组数组转换为带列名的对象数组
+- 验证完整集成功能:
+  - 后端服务启动成功 (python -m src.main api --port 8000)
+  - 前端服务启动成功 (npm run dev)
+  - Schema Explorer 正确加载表结构 (2 tables, 12 columns)
+  - 自然语言查询生成 SQL 正常工作
+  - SQL Preview 正确显示生成的 SQL
+  - Results Table 正确显示查询结果 (4 rows)
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+- 浏览器测试: http://localhost:3000 页面加载正常
+- 查询测试: "查询所有产品" 成功返回 4 条产品记录
+
+### Notes:
+- Feature 48 (Frontend-Backend Integration Phase 6) completed
+- passes set to true in feature_list.json
+- 发现问题: 后端返回的 execution_result 是元组字符串格式,需要前端解析为表格显示
+
+---
+
 ## 2026-02-22 - Frontend-Backend Integration Phase 5: 环境变量配置
 
 ### What was done:

@@ -990,7 +990,7 @@
       "files": [
         "frontend/tests/test_integration.ts"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

@@ -21,6 +21,7 @@ export interface StreamChunk {
   result?: unknown;
   error?: string;
   explanation?: string;
+  data?: Record<string, unknown>;  // For nested data from backend
 }
 
 export type StreamCallback = (chunk: StreamChunk) => void;
