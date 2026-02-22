@@ -926,7 +926,7 @@
       "files": [
         "frontend/src/app/page.tsx"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 46,

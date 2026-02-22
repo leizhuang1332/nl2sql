@@ -8,6 +8,7 @@ import QueryInput from '@/components/nl2sql/QueryInput';
 import SQLPreview from '@/components/nl2sql/SQLPreview';
 import ResultsTable from '@/components/nl2sql/ResultsTable';
 import HybridLayout from '@/components/nl2sql/HybridLayout';
+import { nl2sqlApi } from '@/lib/api';
 
 interface HistoryItem {
   id: string;
@@ -28,29 +29,38 @@ export default function Home() {
   const handleQuerySubmit = async (question: string) => {
     setQuery(question);
     setLoading(true);
+    setSql('');
+    setResults([]);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const mockSql = `SELECT * FROM products WHERE category = 'Electronics' ORDER BY price DESC;`;
-      const mockResults = [
-        { id: 1, name: 'Laptop Pro', price: 1299.99, category: 'Electronics', stock: 50 },
-        { id: 2, name: 'Wireless Mouse', price: 29.99, category: 'Electronics', stock: 200 },
-        { id: 3, name: 'USB-C Hub', price: 49.99, category: 'Electronics', stock: 150 },
-      ];
-      
-      setSql(mockSql);
-      setResults(mockResults);
-      
-      const newHistory: HistoryItem = {
-        id: Date.now().toString(),
+      const response = await nl2sqlApi.query({
         question,
-        sql: mockSql,
-        timestamp: new Date(),
-      };
-      setHistory(prev => [newHistory, ...prev]);
-      
-      message.success('Query executed successfully!');
+        include_sql: true
+      });
+
+      if (response.status === 'success') {
+        setSql(response.sql || '');
+        
+        if (response.result && Array.isArray(response.result)) {
+          setResults(response.result as Record<string, unknown>[]);
+        } else if (response.result) {
+          setResults([response.result as Record<string, unknown>]);
+        } else {
+          setResults([]);
+        }
+
+        const newHistory: HistoryItem = {
+          id: Date.now().toString(),
+          question,
+          sql: response.sql || '',
+          timestamp: new Date(),
+        };
+        setHistory(prev => [newHistory, ...prev]);
+        
+        message.success('Query executed successfully!');
+      } else {
+        message.error(response.error || 'Query failed');
+      }
     } catch (error) {
       message.error('Failed to execute query');
       console.error(error);
@@ -61,20 +71,7 @@ export default function Home() {
 
   const handleRunQuery = async () => {
     if (!sql) return;
-    setLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const mockResults = [
-        { id: 1, name: 'Laptop Pro', price: 1299.99, category: 'Electronics', stock: 50 },
-        { id: 2, name: 'Wireless Mouse', price: 29.99, category: 'Electronics', stock: 200 },
-      ];
-      setResults(mockResults);
-      message.success('Query executed!');
-    } catch {
-      message.error('Failed to run query');
-    } finally {
-      setLoading(false);
-    }
+    message.info('Running custom SQL is not yet implemented');
   };
 
   const handleHistorySelect = (id: string) => {
@@ -85,7 +82,7 @@ export default function Home() {
     }
   };
 
-  const leftPanel = <SchemaExplorer loading={false} />;
+  const leftPanel = <SchemaExplorer loading={loading} />;
   
   const rightPanel = (
     <div className="h-full flex flex-col p-4 gap-4 overflow-auto">

@@ -1,3 +1,24 @@
+## 2026-02-22 - Frontend-Backend Integration Phase 3: 查询功能对接
+
+### What was done:
+- 修改 page.tsx 集成 nl2sqlApi.query() 调用:
+  - 导入 nl2sqlApi 模块
+  - 在 handleQuerySubmit 中调用 nl2sqlApi.query()
+  - 配置 include_sql: true 获取 SQL 语句
+  - 处理响应数据，设置 sql 和 results 状态
+  - 添加错误处理和加载状态管理
+  - 修复 lint 警告 (unused variable: setQuery)
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+
+### Notes:
+- Feature 45 (Frontend-Backend Integration Phase 3) completed
+- passes set to true in feature_list.json
+
+---
+
 ## 2026-02-22 - Frontend-Backend Integration Phase 2: Schema Explorer 对接
 
 ### What was done:
