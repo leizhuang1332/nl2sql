@@ -184,3 +184,13 @@ npm run lint     # Run linter
 5. **One commit per feature** - All changes (code, progress.md, feature_list.json) must be committed in the same commit
 6. **Never remove features** - Only flip `passes: false` to `true`
 7. **Stop if blocked** - When blocked, do not submit. Output blocking information and stop.
+
+---
+
+## 语言规则 (Language Rule)
+
+**永久规则**: 所有输入输出必须使用中文，包括：
+ 与用户的对话交流
+ 代码注释（除非是技术术语）
+ 文档和说明文字
+ 错误提示信息

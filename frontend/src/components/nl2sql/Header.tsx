@@ -39,7 +39,14 @@ export const Header: React.FC<HeaderProps> = ({
             onChange={onDatabaseChange}
             options={databases.map((db) => ({ value: db, label: db }))}
             className="w-48"
-            dropdownStyle={{ backgroundColor: '#1E293B' }}
+            popupMatchSelectWidth={false}
+            styles={{
+              popup: {
+                root: {
+                  backgroundColor: '#1E293B',
+                },
+              },
+            }}
           />
         </div>
       </div>

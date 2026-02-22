@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { message } from 'antd';
+import { App } from 'antd';
 import Header from '@/components/nl2sql/Header';
 import SchemaExplorer from '@/components/nl2sql/SchemaExplorer';
 import QueryInput from '@/components/nl2sql/QueryInput';
@@ -17,6 +17,7 @@ interface HistoryItem {
 }
 
 export default function Home() {
+  const { message } = App.useApp();
   const [selectedDb, setSelectedDb] = useState('example.db');
   const [query, setQuery] = useState('');
   const [sql, setSql] = useState('');

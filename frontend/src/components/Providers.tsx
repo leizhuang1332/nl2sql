@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, App as AntApp } from 'antd';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -47,7 +47,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      {children}
+      <AntApp>
+        {children}
+      </AntApp>
     </ConfigProvider>
   );
 }
