@@ -352,8 +352,8 @@ class NL2SQLOrchestrator:
                 else:
                     table_part = after_from.split()[0] if after_from else ""
             
-            # Clean table name (remove aliases, quotes)
-            table_name = table_part.split()[0].strip('"`[]')
+            # Clean table name (remove aliases, quotes, and semicolons)
+            table_name = table_part.split()[0].strip('"`[];')
             
             # Get column info from database
             if table_name:
@@ -373,22 +373,31 @@ class NL2SQLOrchestrator:
         import re
         columns = []
         
+        # Find the CREATE TABLE section (before comments)
+        # DDL format: CREATE TABLE ... ( columns ) /* comments */
+        create_table_match = re.search(r'CREATE TABLE.*?\((.*?)\)', ddl, re.DOTALL | re.IGNORECASE)
+        if not create_table_match:
+            return columns
+        
+        columns_section = create_table_match.group(1)
+        
         # Match column definitions: column_name DATA_TYPE
-        # Pattern: identifier followed by type
+        # Pattern: identifier followed by type (at the start of a line)
         pattern = r'^\s*(\w+)\s+\w+'
         
-        for line in ddl.split('\n'):
+        for line in columns_section.split('\n'):
             line = line.strip()
-            if not line or line.startswith('#') or line.startswith('--'):
+            if not line:
                 continue
-            if line.lower().startswith('create table') or line.lower().startswith(')'):
+            
+            # Skip constraint definitions
+            if line.lower().startswith(('primary key', 'foreign key', 'unique', 'check', 'constraint')):
                 continue
             
             match = re.match(pattern, line)
             if match:
                 col_name = match.group(1)
-                if col_name.lower() not in ['primary', 'foreign', 'unique', 'check', 'constraint']:
-                    columns.append(col_name)
+                columns.append(col_name)
         
         return columns
 
