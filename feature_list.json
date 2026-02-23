@@ -1065,7 +1065,7 @@
       "files": [
         "frontend/src/lib/api.ts"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 53,
@@ -1086,7 +1086,7 @@
       "files": [
         "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 54,
@@ -1107,7 +1107,7 @@
       "files": [
         "frontend/src/app/page.tsx"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 55,
@@ -1127,7 +1127,7 @@
         "运行 npm run lint 和 npm run build 验证"
       ],
       "files": [],
-      "passes": false
+      "passes": true
     },
     {
       "id": 56,
@@ -1145,7 +1145,7 @@
       "files": [
         "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 57,
@@ -1164,7 +1164,7 @@
       "files": [
         "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

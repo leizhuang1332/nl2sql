@@ -8,6 +8,7 @@ import QueryInput from '@/components/nl2sql/QueryInput';
 import SQLPreview from '@/components/nl2sql/SQLPreview';
 import ResultsTable from '@/components/nl2sql/ResultsTable';
 import HybridLayout from '@/components/nl2sql/HybridLayout';
+import ThinkingDisplay from '@/components/nl2sql/ThinkingDisplay';
 import { nl2sqlApi, StreamChunk } from '@/lib/api';
 
 interface HistoryItem {
@@ -39,6 +40,7 @@ export default function Home() {
   const [streaming, setStreaming] = useState(false);
   const [streamStage, setStreamStage] = useState<string>('');
   const [streamProgress, setStreamProgress] = useState<number>(0);
+  const [thinking, setThinking] = useState('');
 
   const handleQuerySubmit = async (question: string) => {
     setQuery(question);
@@ -48,6 +50,7 @@ export default function Home() {
     setStreaming(true);
     setStreamStage('semantic_mapping');
     setStreamProgress(0);
+    setThinking('');
     
     try {
       await nl2sqlApi.queryStream(
@@ -63,6 +66,17 @@ export default function Home() {
             setStreamStage(chunk.stage);
             setStreamProgress(STAGE_PROGRESS[chunk.stage] || 0);
           }
+          
+          // Handle thinking streaming
+          if (chunk.stage === 'thinking' && chunk.status === 'streaming' && chunk.chunk) {
+            setThinking(prev => prev + chunk.chunk);
+          }
+          
+          // Handle thinking done
+          if (chunk.stage === 'thinking_done' && data?.thinking) {
+            setThinking(data.thinking as string);
+          }
+          
           if (data?.sql) {
             setSql(data.sql as string);
           }
@@ -80,7 +94,7 @@ export default function Home() {
               try {
                 // Parse the string representation of tuples
                 // First, convert single quotes to double quotes (but preserve escaped quotes)
-                let parsed = execResult
+                const parsed = execResult
                   .replace(/\(/g, '[')
                   .replace(/\)/g, ']')
                   .replace(/'/g, '"');
@@ -154,6 +168,11 @@ export default function Home() {
   
   const rightPanel = (
     <div className="h-full flex flex-col p-4 gap-4 overflow-auto">
+      <ThinkingDisplay 
+        thinking={thinking} 
+        loading={loading && !thinking} 
+      />
+      
       <QueryInput 
         onSubmit={handleQuerySubmit} 
         loading={loading}

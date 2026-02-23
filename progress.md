@@ -1,3 +1,37 @@
+## 2026-02-23 - Frontend: 更新 API 类型定义 + 创建 ThinkingDisplay 组件
+
+### What was done:
+- 更新 frontend/src/lib/api.ts:
+  - 在 StreamChunk 接口中新增 thinking 字段 (AI 思考过程)
+  - 新增 chunk 字段 (流式数据片段)
+- 创建 ThinkingDisplay 组件:
+  - 文件位置: frontend/src/components/nl2sql/ThinkingDisplay.tsx
+  - 使用 Card 组件展示 thinking 内容
+  - 添加 BulbOutlined 图标标识 AI 思考
+  - 实现自动滚动到底部功能
+  - 支持加载状态显示 (思考中...)
+  - 使用黄色主题区分于 SQL 展示
+- 集成 ThinkingDisplay 到主页面:
+  - 在 page.tsx 中添加 thinking state
+  - 在 handleQuerySubmit 中处理 thinking 阶段数据
+  - 处理 streaming 状态的 thinking 累加
+  - 处理 thinking_done 状态的完整 thinking
+  - 在 rightPanel 中渲染 ThinkingDisplay 组件
+- 修复 SchemaExplorer.tsx 的 displayName 问题
+- 修复 page.tsx 中 let → const 的 lint 错误
+
+### Testing:
+- npm run lint 通过
+- npm run build 成功
+- 构建验证通过
+
+### Notes:
+- Feature 52 (Frontend: 更新 API 类型定义) completed
+- 为后续 thinking 展示功能奠定基础
+- 同时完成了 feature 53, 54, 55 (创建和集成 ThinkingDisplay)
+
+---
+
 ## 2026-02-23 - Backend: 实现 generate_with_thinking_stream 方法
 
 ### What was done:

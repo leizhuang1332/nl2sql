@@ -170,4 +170,6 @@ export const SchemaExplorer: React.FC<SchemaExplorerProps> = React.memo(({ loadi
   );
 });
 
+SchemaExplorer.displayName = 'SchemaExplorer';
+
 export default SchemaExplorer;

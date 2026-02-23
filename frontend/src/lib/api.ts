@@ -21,6 +21,8 @@ export interface StreamChunk {
   result?: unknown;
   error?: string;
   explanation?: string;
+  thinking?: string;  // 新增：AI 思考过程
+  chunk?: string;    // 新增：流式数据片段
   data?: Record<string, unknown>;  // For nested data from backend
 }
 
