@@ -1,3 +1,28 @@
+## 2026-02-23 - Backend: 修改 Prompt 模板要求 Thinking 输出
+
+### What was done:
+- 修改 SQLGenerator 的 _get_default_template() 方法:
+  - 添加 thinking 输出指令，要求模型先输出思考过程
+  - 设计清晰的输出格式：使用 <thinking> 和 <sql> 标签
+  - 思考内容包括：理解用户意图、确定查询字段、确定聚合函数和筛选条件、确认 SQL 逻辑
+- 更新 _clean_sql() 方法:
+  - 添加 <sql> 标签解析，提取 SQL 内容
+  - 支持多种分隔符格式
+- 新增 _extract_thinking() 方法:
+  - 从输出中提取 thinking 内容
+  - 支持 <thinking> 和 </thinking> 标签解析
+
+### Testing:
+- Python 语法验证通过: python -m py_compile src/generation/sql_generator.py
+
+### Notes:
+- Feature 49 (Backend: 修改 Prompt 模板要求 Thinking 输出) completed
+- passes set to true in feature_list.json
+- 为后续 thinking 流式输出功能奠定基础
+
+---
+
+
 ## 2026-02-22 - Frontend-Backend Integration Phase 6: 集成测试验证
 
 ### What was done:

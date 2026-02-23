@@ -991,6 +991,180 @@
         "frontend/tests/test_integration.ts"
       ],
       "passes": true
+    },
+    {
+      "id": 49,
+      "title": "Backend: 修改 Prompt 模板要求 Thinking 输出",
+      "description": "修改 SQL Generator Prompt 模板，要求模型先输出思考过程，再输出 SQL",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "generation",
+      "phase": 1,
+      "steps": [
+        "修改 _get_default_template() 方法，添加 thinking 输出指令",
+        "设计清晰的输出格式：思考过程 + SQL",
+        "验证 Prompt 对所有 LLM 提供商有效"
+      ],
+      "files": [
+        "src/generation/sql_generator.py"
+      ],
+      "passes": true
+    },
+    {
+      "id": 50,
+      "title": "Backend: 实现 generate_with_thinking_stream 方法",
+      "description": "在 SQLGenerator 中实现流式生成 thinking 和 SQL 的方法，使用解析逻辑分离两部分内容",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "generation",
+      "phase": 2,
+      "steps": [
+        "新增 generate_with_thinking_stream() 方法",
+        "实现流式解析逻辑，检测 thinking 到 SQL 的转换点",
+        "实现 _parse_thinking_output() 解析方法，支持多种分隔符",
+        "实现 _contains_sql_start() 检测 SQL 开始",
+        "测试流式输出正确分离 thinking 和 SQL"
+      ],
+      "files": [
+        "src/generation/sql_generator.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 51,
+      "title": "Backend: 修改 Orchestrator 新增 thinking 阶段",
+      "description": "在 Orchestrator 的 ask_stream 方法中新增 thinking 阶段，流式返回思考过程",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "orchestrator",
+      "phase": 1,
+      "steps": [
+        "修改 ask_stream() 方法，调用 generate_with_thinking_stream()",
+        "新增 thinking 阶段流式返回",
+        "新增 thinking_done 阶段返回完整 thinking",
+        "确保 thinking 数据透传到 API 层",
+        "测试完整的 thinking 流式输出"
+      ],
+      "files": [
+        "src/core/orchestrator.py"
+      ],
+      "passes": false
+    },
+    {
+      "id": 52,
+      "title": "Frontend: 更新 API 类型定义",
+      "description": "在 api.ts 中新增 thinking 数据类型定义",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 1,
+      "steps": [
+        "在 StreamChunk 接口中新增 thinking 字段",
+        "验证类型定义与后端 API 响应匹配"
+      ],
+      "files": [
+        "frontend/src/lib/api.ts"
+      ],
+      "passes": false
+    },
+    {
+      "id": 53,
+      "title": "Frontend: 创建 ThinkingDisplay 组件",
+      "description": "创建 AI 思考过程展示组件，实时显示流式 thinking 内容",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 2,
+      "steps": [
+        "创建 ThinkingDisplay.tsx 组件",
+        "使用 Card 组件展示 thinking 内容",
+        "添加 BulbOutlined 图标标识 AI 思考",
+        "实现自动滚动到底部功能",
+        "支持加载状态显示 (思考中...)",
+        "使用黄色主题区分于 SQL 展示"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
+      ],
+      "passes": false
+    },
+    {
+      "id": 54,
+      "title": "Frontend: 集成 Thinking 展示到主页面",
+      "description": "修改主页面，集成 ThinkingDisplay 组件，处理 thinking 流式数据",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 3,
+      "steps": [
+        "在 Home 组件中添加 thinking state",
+        "在 handleQuerySubmit 中处理 thinking 阶段数据",
+        "处理 streaming 状态的 thinking 累加",
+        "处理 thinking_done 状态的完整 thinking",
+        "在 rightPanel 中渲染 ThinkingDisplay 组件",
+        "调整布局顺序：Thinking → QueryInput → SQL → Results"
+      ],
+      "files": [
+        "frontend/src/app/page.tsx"
+      ],
+      "passes": false
+    },
+    {
+      "id": 55,
+      "title": "Frontend: 浏览器测试验证 Thinking 展示",
+      "description": "使用 Playwright 浏览器测试验证 thinking 展示功能",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p0",
+      "module": "frontend",
+      "phase": 4,
+      "steps": [
+        "启动后端服务",
+        "启动前端服务",
+        "提交自然语言查询",
+        "验证 ThinkingDisplay 组件正确显示",
+        "验证 thinking 实时流式更新",
+        "验证 SQL 正确生成",
+        "运行 npm run lint 和 npm run build 验证"
+      ],
+      "files": [],
+      "passes": false
+    },
+    {
+      "id": 56,
+      "title": "Frontend: 添加 Markdown 渲染支持 (可选)",
+      "description": "为 ThinkingDisplay 组件添加 Markdown 渲染支持，丰富展示格式",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p2",
+      "module": "frontend",
+      "phase": 5,
+      "steps": [
+        "安装 react-markdown 依赖",
+        "在 ThinkingDisplay 中集成 ReactMarkdown",
+        "验证 Markdown 渲染正确"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
+      ],
+      "passes": false
+    },
+    {
+      "id": 57,
+      "title": "Frontend: 添加 Thinking 折叠功能 (可选)",
+      "description": "为 ThinkingDisplay 组件添加折叠/展开功能，节省界面空间",
+      "source": ".sisyphus/plans/show-thinking-plan.md",
+      "priority": "p2",
+      "module": "frontend",
+      "phase": 6,
+      "steps": [
+        "添加 thinkingExpanded state",
+        "在 Card header 添加折叠按钮",
+        "根据 expanded 状态条件渲染内容",
+        "验证折叠功能正常工作"
+      ],
+      "files": [
+        "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
+      ],
+      "passes": false
     }
   ]
 }

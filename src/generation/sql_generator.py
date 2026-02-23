@@ -49,21 +49,39 @@ class SQLGenerator:
     def _get_default_template(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_template("""
 基于以下数据库 Schema，将用户问题转换为 SQL 查询。
-
 Schema:
 {schema}
-
 用户问题: {question}
 
-要求：
-1. 只返回 SQL 语句，不要解释
-2. 确保 SQL 语法正确
-3. 使用合适的聚合函数和条件判断
-
+请按照以下格式输出：
+<thinking>
+在这里写出你的思考过程，包括：
+1. 理解用户问题的意图
+2. 确定需要查询哪些表和字段
+3. 确定需要的聚合函数、筛选条件、排序等
+4. 确认 SQL 逻辑的正确性
+</thinking>
+<sql>
+在这里写出生成的 SQL 查询语句
+</sql>
 SQL:
 """)
-
     def _clean_sql(self, sql: str) -> str:
         sql = sql.strip()
+        # 如果包含 <sql> 标签，提取 SQL 内容
+        if "<sql>" in sql and "</sql>" in sql:
+            start = sql.find("<sql>") + len("<sql>")
+            end = sql.find("</sql>")
+            sql = sql[start:end]
         sql = sql.replace("```sql", "").replace("```", "")
         return sql.strip()
+    def _extract_thinking(self, output: str) -> str:
+        """从输出中提取 thinking 内容"""
+        output = output.strip()
+        
+        if "<thinking>" in output and "</thinking>" in output:
+            start = output.find("<thinking>") + len("<thinking>")
+            end = output.find("</thinking>")
+            return output[start:end].strip()
+        
+        return ""
