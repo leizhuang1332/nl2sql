@@ -1165,6 +1165,32 @@
         "frontend/src/components/nl2sql/ThinkingDisplay.tsx"
       ],
       "passes": true
+    },
+    {
+      "id": 58,
+      "title": "MiniMax 原生 Thinking 流式支持",
+      "description": "实现 MiniMax M2.5 模型的原生 thinking 流式输出，不依赖 Prompt 模板强制，同时优化前端 UI 展示",
+      "source": ".sisyphus/plans/ai-thinking-display.md",
+      "priority": "p1",
+      "module": "generation",
+      "phase": 1,
+      "steps": [
+        "新增 generate_with_native_thinking_stream 方法，直接解析 MiniMax API 原生 thinking_delta",
+        "修改 orchestrator.py 支持原生 thinking 流式传递",
+        "检查 ThinkingDisplay 组件是否有隐藏逻辑并修复",
+        "调整 ThinkingDisplay 组件到 QueryInput 输入框下方",
+        "确保处理阶段进度条默认展示",
+        "运行 pytest 测试验证后端功能",
+        "运行 npm build 验证前端构建",
+        "浏览器测试验证 UI 展示"
+      ],
+      "files": [
+        "src/generation/sql_generator.py",
+        "src/core/orchestrator.py",
+        "frontend/src/components/nl2sql/ThinkingDisplay.tsx",
+        "frontend/src/app/page.tsx"
+      ],
+      "passes": false
     }
   ]
 }

@@ -209,3 +209,82 @@ SELECT * FROM products;
                    f"\n{starter}" in f"\n{text_lower}" or 
                    f" {starter}" in f" {text_lower}"
                    for starter in sql_starters)
+
+    def _get_native_thinking_template(self) -> ChatPromptTemplate:
+        """获取不强制 thinking 标签的简化模板，让模型自由使用原生 thinking"""
+        return ChatPromptTemplate.from_template("""你是一个 SQL 专家。请根据以下数据库结构和用户问题生成 SQL 查询。
+
+数据库结构：
+{schema}
+
+用户问题：{question}
+
+请直接输出 SQL 查询语句，不要包含任何解释或思考过程。""")
+
+    def generate_with_native_thinking_stream(self, schema: str, question: str) -> Generator[Dict[str, str], None, None]:
+        """使用简化模板的流式生成方法
+        
+        这个方法使用简化的 Prompt 模板，不强制要求模型输出 thinking 标签，
+        让模型可以自由使用原生 thinking 能力。
+        
+        Args:
+            schema: 数据库 Schema 文档
+            question: 用户问题
+            
+        Yields:
+            Dict with keys: 'type' ('thinking' or 'sql'), 'content'
+        """
+        try:
+            # 使用简化模板，让模型自由决定是否使用 thinking
+            simple_template = self._get_native_thinking_template()
+            chain = simple_template | self.llm | self.output_parser
+            
+            in_thinking = True
+            thinking_content = ""
+            sql_content = ""
+            buffer = ""
+            has_sent_thinking = False
+            
+            for chunk in chain.stream({"schema": schema, "question": question}):
+                buffer += chunk
+                
+                # 尝试检测是否进入 SQL 阶段
+                if in_thinking:
+                    # 检查是否包含 SQL 开始标记
+                    if self._contains_sql_start(buffer):
+                        # 提取 thinking 内容
+                        thinking_content = buffer
+                        for sql_starter in ["<sql>", "```sql", "SQL:", "select "]:
+                            if sql_starter.lower() in buffer.lower():
+                                parts = buffer.split(sql_starter, 1)
+                                if len(parts) > 1:
+                                    thinking_content = parts[0].strip()
+                                    sql_content = parts[1].strip()
+                                    break
+                        in_thinking = False
+                        
+                        # 发送 thinking 内容
+                        if thinking_content.strip():
+                            yield {"type": "thinking", "content": thinking_content}
+                            has_sent_thinking = True
+                        
+                        # 发送 SQL 内容
+                        if sql_content.strip():
+                            yield {"type": "sql", "content": self._clean_sql(sql_content)}
+                    else:
+                        # 还在 thinking 阶段，继续累积
+                        if chunk:
+                            yield {"type": "thinking", "content": buffer}
+                            has_sent_thinking = True
+                else:
+                    # SQL 阶段
+                    sql_content += chunk
+                    yield {"type": "sql", "content": self._clean_sql(sql_content)}
+            
+            # 如果没有发送过 thinking，发送一个空 thinking 表示开始
+            if not has_sent_thinking:
+                yield {"type": "thinking", "content": ""}
+                
+        except Exception as e:
+            logger.error(f"原生 Thinking 流式生成失败: {e}")
+            yield {"type": "error", "content": str(e)}

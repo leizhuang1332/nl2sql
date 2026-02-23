@@ -77,21 +77,19 @@ export const QueryInput: React.FC<QueryInputProps> = ({
               <Tag color="default">等待输入</Tag>
             )}
           </div>
-          {streamProgress !== undefined && (
-            <span className="text-sm text-slate-400">{streamProgress}%</span>
-          )}
+          <span className="text-sm text-slate-400">
+            {streamProgress !== undefined ? `${streamProgress}%` : '0%'}
+          </span>
         </div>
-        {streamProgress !== undefined && (
-          <Progress 
-            percent={streamProgress} 
-            size="small" 
-            status={loading ? 'active' : 'normal'}
-            strokeColor={{
-              '0%': '#108ee9',
-              '100%': '#87d068',
-            }}
-          />
-        )}
+        <Progress 
+          percent={streamProgress || 0} 
+          size="small" 
+          status={loading ? 'active' : 'normal'}
+          strokeColor={{
+            '0%': '#108ee9',
+            '100%': '#87d068',
+          }}
+        />
       </div>
 
       <TextArea

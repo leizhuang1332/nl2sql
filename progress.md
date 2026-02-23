@@ -1,3 +1,30 @@
+## 2026-02-23 - MiniMax 原生 Thinking 流式支持
+
+### What was done:
+- 后端新增 generate_with_native_thinking_stream 方法:
+  - 文件: src/generation/sql_generator.py
+  - 使用简化 Prompt 模板，让模型自由使用原生 thinking 能力
+  - 不强制要求模型输出 `<thinking>` 标签
+- 修改 orchestrator.py 使用原生 thinking 方法:
+  - 调用 generate_with_native_thinking_stream 替代 generate_with_thinking_stream
+- 前端进度条默认展示:
+  - 文件: frontend/src/components/nl2sql/QueryInput.tsx
+  - 移除进度条的条件判断，始终显示
+  - 默认显示 0% 进度
+- 前端组件顺序已正确 (QueryInput → ThinkingDisplay → SQLPreview)
+
+### Testing:
+- pytest tests/: Pass (390 tests)
+- npm run build: Success
+- 前端编译无错误
+
+### Notes:
+- 简化模板让 MiniMax 模型可以自由使用原生 thinking
+- 进度条现在默认显示，无需等待查询开始
+- 保持与现有功能的兼容性
+
+---
+
 ## 2026-02-23 - AI Thinking 展示优化
 
 ### What was done:
