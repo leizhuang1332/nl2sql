@@ -96,41 +96,50 @@ SELECT * FROM products;
             in_thinking = False
             in_sql = False
             thinking_content = ""
-            has_sent_thinking = False
-            first_chunk = True
+            sql_content = ""
             buffer = ""
+            
             for chunk in chain.stream({"schema": schema, "question": question}):
                 buffer += chunk
-                if first_chunk:
-                    yield {"type": "thinking", "content": "正在分析问题并生成 SQL 查询..."}
-                    has_sent_thinking = True
-                    first_chunk = False
-                    before_thinking = buffer.split("<thinking>", 1)[0]
-                    if before_thinking.strip():
-                        continue
-                    in_thinking = True
-                    buffer = buffer.split("<thinking>", 1)[1]
+                
+                # 检查是否进入 thinking 阶段
+                if not in_thinking and not in_sql:
+                    if "<thinking>" in buffer:
+                        in_thinking = True
+                        # 提取 <thinking> 之后的内容
+                        parts = buffer.split("<thinking>", 1)
+                        buffer = parts[1] if len(parts) > 1 else ""
+                
+                # 处理 thinking 阶段
                 if in_thinking and not in_sql:
                     if "</thinking>" in buffer:
-                        thinking_part = buffer.split("</thinking>", 1)[0]
-                        thinking_content += thinking_part
-                        yield {"type": "thinking", "content": thinking_content}
-                        has_sent_thinking = True
-                        buffer = buffer.split("</thinking>", 1)[1]
+                        # thinking 结束
+                        parts = buffer.split("</thinking>", 1)
+                        thinking_content += parts[0]
+                        buffer = parts[1] if len(parts) > 1 else ""
                         in_thinking = False
                         in_sql = True
+                        # 发送完整的 thinking
+                        yield {"type": "thinking", "content": thinking_content}
                     else:
+                        # 继续累加 thinking
                         thinking_content += chunk
                         yield {"type": "thinking", "content": thinking_content}
-                        has_sent_thinking = True
+                
                 # 处理 SQL 阶段
-                if not in_thinking and buffer.strip():
-                    sql_content = buffer
-                    if "<sql>" in sql_content:
-                        sql_content = sql_content.split("<sql>", 1)[1]
-                    if "</sql>" in sql_content:
-                        sql_content = sql_content.split("</sql>", 1)[0]
+                if in_sql and buffer.strip():
+                    sql_content += chunk
+                    # 提取 <sql>...</sql> 之间的内容
+                    if "<sql>" in buffer:
+                        parts = buffer.split("<sql>", 1)
+                        buffer = parts[1] if len(parts) > 1 else buffer
+                    if "</sql>" in buffer:
+                        parts = buffer.split("</sql>", 1)
+                        sql_content = parts[0]
+                        buffer = parts[1] if len(parts) > 1 else ""
                     yield {"type": "sql", "content": sql_content.strip()}
+                    in_sql = False  # 完成 SQL 输出
+                    
         except Exception as e:
             logger.error(f"Thinking + SQL 流式生成失败: {e}")
             yield {"type": "error", "content": str(e)}

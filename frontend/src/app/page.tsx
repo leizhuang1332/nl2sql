@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { App } from 'antd';
+import { App, Switch } from 'antd';
 import Header from '@/components/nl2sql/Header';
 import SchemaExplorer from '@/components/nl2sql/SchemaExplorer';
 import QueryInput from '@/components/nl2sql/QueryInput';
@@ -41,6 +41,7 @@ export default function Home() {
   const [streamStage, setStreamStage] = useState<string>('');
   const [streamProgress, setStreamProgress] = useState<number>(0);
   const [thinking, setThinking] = useState('');
+  const [showThinking, setShowThinking] = useState(false);
 
   const handleQuerySubmit = async (question: string) => {
     setQuery(question);
@@ -69,17 +70,22 @@ export default function Home() {
           
           // Handle thinking streaming
           if (chunk.stage === 'thinking' && chunk.status === 'streaming' && chunk.chunk) {
-            setThinking(prev => prev + chunk.chunk);
+            // Clean thinking tags from content
+            const cleanedChunk = chunk.chunk
+              .replace(/<thinking>/g, '')
+              .replace(/<\/thinking>/g, '');
+            setThinking(prev => prev + cleanedChunk);
           }
           // Handle thinking done
           if (chunk.stage === 'thinking_done' && data?.thinking) {
-            setThinking(data.thinking as string);
+            // Clean thinking tags from content
+            const cleanedThinking = (data.thinking as string)
+              .replace(/<thinking>/g, '')
+              .replace(/<\/thinking>/g, '');
+            setThinking(cleanedThinking);
           }
           
-          // Show thinking placeholder when SQL is being generated (if no thinking content yet)
-          if ((chunk.stage === 'sql_generating' || chunk.stage === 'sql_generated') && !thinking) {
-            setThinking('AI 正在分析问题并生成 SQL 查询...');
-          }
+
           if (data?.sql) {
             setSql(data.sql as string);
           }
@@ -180,10 +186,22 @@ export default function Home() {
         streamProgress={streamProgress}
       />
       
-      <ThinkingDisplay 
-        thinking={thinking} 
-        loading={loading && !thinking} 
-      />
+      {/* 思考过程切换按钮 - 默认隐藏 */}
+      <div className="flex items-center gap-2 mb-2">
+        <Switch
+          checked={showThinking}
+          onChange={(checked) => setShowThinking(checked)}
+          size="small"
+        />
+        <span className="text-sm text-slate-400">显示 AI 思考过程</span>
+      </div>
+      
+      {showThinking && (
+        <ThinkingDisplay 
+          thinking={thinking} 
+          loading={loading && !thinking} 
+        />
+      )}
       
       <SQLPreview 
         sql={sql}
