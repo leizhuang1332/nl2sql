@@ -165,15 +165,50 @@ class NL2SQLOrchestrator:
 
         try:
             sql_chunks = []
-            for chunk in self.sql_generator.generate_stream(schema_doc, mapping.enhanced_question):
-                sql_chunks.append(chunk)
+            thinking_chunks = []
+            
+            # 使用 generate_with_thinking_stream 同时获取 thinking 和 SQL
+            for item in self.sql_generator.generate_with_thinking_stream(schema_doc, mapping.enhanced_question):
+                item_type = item.get("type")
+                
+                if item_type == "thinking":
+                    # 流式输出 thinking
+                    thinking_content = item.get("content", "")
+                    thinking_chunks.append(thinking_content)
+                    yield {
+                        "stage": "thinking",
+                        "status": "streaming",
+                        "chunk": thinking_content,
+                        "timestamp": time.time() - start_time
+                    }
+                elif item_type == "sql":
+                    # 流式输出 SQL
+                    sql_chunks.append(item.get("content", ""))
+                    yield {
+                        "stage": "sql_generating",
+                        "status": "streaming",
+                        "chunk": item.get("content", ""),
+                        "timestamp": time.time() - start_time
+                    }
+                elif item_type == "error":
+                    yield {
+                        "stage": "thinking",
+                        "status": "error",
+                        "error": item.get("content", "Unknown error"),
+                        "timestamp": time.time() - start_time
+                    }
+                    return
+            
+            # 完成 thinking 阶段
+            thinking = "".join(thinking_chunks)
+            if thinking:
                 yield {
-                    "stage": "sql_generating",
-                    "status": "streaming",
-                    "chunk": chunk,
+                    "stage": "thinking_done",
+                    "status": "success",
+                    "data": {"thinking": thinking},
                     "timestamp": time.time() - start_time
                 }
-
+            
             sql = "".join(sql_chunks)
             sql = self.sql_generator._clean_sql(sql)
 
@@ -184,7 +219,7 @@ class NL2SQLOrchestrator:
                 "timestamp": time.time() - start_time
             }
         except Exception as e:
-            yield {"stage": "sql_generating", "status": "error", "error": str(e)}
+            yield {"stage": "thinking", "status": "error", "error": str(e)}
             return
 
         try:
