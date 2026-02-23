@@ -1190,7 +1190,7 @@
         "frontend/src/components/nl2sql/ThinkingDisplay.tsx",
         "frontend/src/app/page.tsx"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
