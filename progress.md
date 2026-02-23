@@ -1,3 +1,32 @@
+## 2026-02-23 - AI Thinking 展示优化
+
+### What was done:
+- 修复 sql_generator.py 中的 buffer 未初始化 bug:
+  - 在 generate_with_thinking_stream() 方法中添加 buffer = "" 初始化
+- 前端 ThinkingDisplay 组件默认展示:
+  - 移除 if (!thinking && !loading) return null 隐藏逻辑
+  - 组件始终显示，即使没有内容也显示空状态
+- 调整组件顺序:
+  - 将 ThinkingDisplay 移到 QueryInput 下方
+  - 先显示输入框，再显示思考过程
+- 处理阶段进度默认展示:
+  - 移除 streaming 条件判断
+  - 进度条始终显示
+  - 添加默认状态显示 "等待输入"
+
+### Testing:
+- npm run lint: Pass
+- npm run build: Success
+- 浏览器测试: 页面加载正常
+  - 处理阶段进度条默认显示 "处理阶段: 等待输入 0%"
+  - ThinkingDisplay 默认显示 "AI 思考过程"
+
+### Notes:
+- 为后续 MiniMax 原生 thinking 流式支持奠定基础
+- 用户体验优化：思考过程和处理阶段现在默认可见
+
+---
+
 ## 2026-02-23 - Frontend: 更新 API 类型定义 + 创建 ThinkingDisplay 组件
 
 ### What was done:

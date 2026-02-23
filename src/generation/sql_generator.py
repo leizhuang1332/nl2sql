@@ -98,6 +98,7 @@ SELECT * FROM products;
             thinking_content = ""
             has_sent_thinking = False
             first_chunk = True
+            buffer = ""
             for chunk in chain.stream({"schema": schema, "question": question}):
                 buffer += chunk
                 if first_chunk:

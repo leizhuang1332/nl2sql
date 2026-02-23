@@ -62,37 +62,37 @@ export const QueryInput: React.FC<QueryInputProps> = ({
 
   return (
     <div className="flex flex-col gap-3">
-      {streaming && (
-        <div className="bg-slate-800 rounded-lg p-3 border border-slate-700">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              {loading ? (
-                <SyncOutlined spin className="text-green-400" />
-              ) : (
-                <CheckCircleOutlined className="text-green-400" />
-              )}
-              <span className="text-sm text-slate-300">处理阶段:</span>
-              {currentStageLabel && (
-                <Tag color={currentStageColor}>{currentStageLabel}</Tag>
-              )}
-            </div>
-            {streamProgress !== undefined && (
-              <span className="text-sm text-slate-400">{streamProgress}%</span>
+      <div className="bg-slate-800 rounded-lg p-3 border border-slate-700">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            {loading ? (
+              <SyncOutlined spin className="text-green-400" />
+            ) : (
+              <CheckCircleOutlined className="text-green-400" />
+            )}
+            <span className="text-sm text-slate-300">处理阶段:</span>
+            {currentStageLabel ? (
+              <Tag color={currentStageColor}>{currentStageLabel}</Tag>
+            ) : (
+              <Tag color="default">等待输入</Tag>
             )}
           </div>
           {streamProgress !== undefined && (
-            <Progress 
-              percent={streamProgress} 
-              size="small" 
-              status={loading ? 'active' : 'success'}
-              strokeColor={{
-                '0%': '#108ee9',
-                '100%': '#87d068',
-              }}
-            />
+            <span className="text-sm text-slate-400">{streamProgress}%</span>
           )}
         </div>
-      )}
+        {streamProgress !== undefined && (
+          <Progress 
+            percent={streamProgress} 
+            size="small" 
+            status={loading ? 'active' : 'normal'}
+            strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }}
+          />
+        )}
+      </div>
 
       <TextArea
         value={value}

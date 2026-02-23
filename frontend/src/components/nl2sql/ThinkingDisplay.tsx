@@ -22,10 +22,6 @@ export const ThinkingDisplay: React.FC<ThinkingDisplayProps> = ({
     }
   }, [thinking]);
 
-  if (!thinking && !loading) {
-    return null;
-  }
-
   return (
     <Card
       className="bg-slate-800 border-slate-700"

@@ -171,11 +171,6 @@ export default function Home() {
   
   const rightPanel = (
     <div className="h-full flex flex-col p-4 gap-4 overflow-auto">
-      <ThinkingDisplay 
-        thinking={thinking} 
-        loading={loading && !thinking} 
-      />
-      
       <QueryInput 
         onSubmit={handleQuerySubmit} 
         loading={loading}
@@ -183,6 +178,11 @@ export default function Home() {
         streaming={streaming}
         streamStage={streamStage}
         streamProgress={streamProgress}
+      />
+      
+      <ThinkingDisplay 
+        thinking={thinking} 
+        loading={loading && !thinking} 
       />
       
       <SQLPreview 
