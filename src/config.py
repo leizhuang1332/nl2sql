@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     llm_max_tokens: int = Field(default=2000, alias="llm_max_tokens")
     # Request timeout
     llm_timeout: int = Field(default=60, alias="llm_timeout")
+    # Enable thinking/reasoning (for models that support it like MiniMax M2.5)
+    llm_thinking_enabled: bool = Field(default=False, alias="llm_thinking_enabled")
+    # Thinking token budget
+    llm_thinking_budget: int = Field(default=4096, alias="llm_thinking_budget")
     
     # MiniMax specific settings
     minimax_api_key: str = Field(default="", alias="minimax_api_key")

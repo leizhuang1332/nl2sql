@@ -58,6 +58,8 @@ def create_orchestrator(settings: Settings) -> NL2SQLOrchestrator:
             api_key=settings.llm_api_key or settings.minimax_api_key,
             base_url=settings.llm_base_url or settings.minimax_base_url,
             temperature=settings.llm_temperature,
+            thinking=settings.llm_thinking_enabled,
+            thinking_budget=settings.llm_thinking_budget,
         )
     except ImportError as e:
         logger.warning(f"Failed to create LLM (dependency missing): {e}")

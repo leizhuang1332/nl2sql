@@ -20,6 +20,10 @@ llm:
   max_tokens: 2000
   # 请求超时时间（秒）
   timeout: 60
+  # 启用 Thinking/Reasoning（适用于支持该功能的模型如 MiniMax M2.5）
+  thinking_enabled: true
+  # Thinking token 预算
+  thinking_budget: 4096
 
 # MiniMax 专用配置（当 provider 为 minimax 时使用）
 minimax:

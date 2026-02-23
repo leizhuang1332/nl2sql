@@ -1,3 +1,37 @@
+## 2026-02-23 - MiniMax 原生 Thinking 流式支持 (修复)
+
+### 问题诊断:
+- 之前的实现虽然添加了 generate_with_native_thinking_stream 方法，但未真正启用 thinking
+- LangChain ChatAnthropic 需要显式配置 thinking 参数才能返回原生 thinking 内容
+
+### What was done:
+- 修改 llm_factory.py:
+  - 添加 thinking 参数 (thinking: bool, thinking_budget: int)
+  - 当 thinking=True 时，自动配置 ChatAnthropic 的 thinking 参数
+- 修改 config.py:
+  - 添加 llm_thinking_enabled 配置项 (默认 false)
+  - 添加 llm_thinking_budget 配置项 (默认 4096)
+- 修改 main.py:
+  - 将 thinking 配置传递给 create_llm
+- 修改 config/settings.yaml:
+  - 添加 thinking_enabled: true
+  - 添加 thinking_budget: 4096
+- 后端 generate_with_native_thinking_stream 方法保持不变:
+  - 使用简化 Prompt 模板，让模型自由使用原生 thinking 能力
+  - 不强制要求模型输出 `<thinking>` 标签
+
+### Testing:
+- pytest tests/: 381 tests passed (2 个预先存在的测试问题)
+- npm run build: Success
+- 前端编译无错误
+
+### Notes:
+- 现在通过配置启用 MiniMax M2.5 的原生 thinking 功能
+- thinking 内容会在流式输出中传递给前端 ThinkingDisplay 组件
+- 用户需要在 .env.local 中设置 MINIMAX_API_KEY 才能测试此功能
+
+---
+
 ## 2026-02-23 - MiniMax 原生 Thinking 流式支持
 
 ### What was done:
