@@ -1028,7 +1028,7 @@
       "files": [
         "src/generation/sql_generator.py"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": 51,
