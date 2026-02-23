@@ -71,12 +71,15 @@ export default function Home() {
           if (chunk.stage === 'thinking' && chunk.status === 'streaming' && chunk.chunk) {
             setThinking(prev => prev + chunk.chunk);
           }
-          
           // Handle thinking done
           if (chunk.stage === 'thinking_done' && data?.thinking) {
             setThinking(data.thinking as string);
           }
           
+          // Show thinking placeholder when SQL is being generated (if no thinking content yet)
+          if ((chunk.stage === 'sql_generating' || chunk.stage === 'sql_generated') && !thinking) {
+            setThinking('AI 正在分析问题并生成 SQL 查询...');
+          }
           if (data?.sql) {
             setSql(data.sql as string);
           }

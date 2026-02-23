@@ -47,24 +47,23 @@ class SQLGenerator:
             yield f"[ERROR] {str(e)}"
 
     def _get_default_template(self) -> ChatPromptTemplate:
-        return ChatPromptTemplate.from_template("""
-基于以下数据库 Schema，将用户问题转换为 SQL 查询。
-Schema:
-{schema}
-用户问题: {question}
-
-请按照以下格式输出：
+        return ChatPromptTemplate.from_template("""你是一个 SQL 专家。请严格按照以下格式输出你的思考过程和 SQL 查询。
+1. 首先输出 <thinking> 标签
+2. 在 <thinking> 和 </thinking> 之间写下你的完整思考过程
+3. 然后输出 <sql> 标签
+4. 在 <sql> 和 </sql> 之间写下生成的 SQL 查询
+示例格式：
 <thinking>
-在这里写出你的思考过程，包括：
-1. 理解用户问题的意图
-2. 确定需要查询哪些表和字段
-3. 确定需要的聚合函数、筛选条件、排序等
-4. 确认 SQL 逻辑的正确性
+我需要先理解用户的问题...经过分析，我认为应该查询 products 表...
 </thinking>
 <sql>
-在这里写出生成的 SQL 查询语句
+SELECT * FROM products;
 </sql>
-SQL:
+现在开始输出：
+{schema}
+用户问题: {question}
+请严格按照上述格式输出：
+<thinking>
 """)
     def _clean_sql(self, sql: str) -> str:
         sql = sql.strip()
@@ -87,62 +86,50 @@ SQL:
 
     def generate_with_thinking_stream(self, schema: str, question: str) -> Generator[Dict[str, str], None, None]:
         """流式生成 thinking 和 SQL，分阶段返回
-        
         Args:
             schema: 数据库 Schema 文档
             question: 用户问题
-            
-        Yields:
             Dict with keys: 'type' ('thinking' or 'sql'), 'content'
         """
         try:
             chain = self.prompt_template | self.llm | self.output_parser
-            
-            buffer = ""
             in_thinking = False
             in_sql = False
             thinking_content = ""
-            
+            has_sent_thinking = False
+            first_chunk = True
             for chunk in chain.stream({"schema": schema, "question": question}):
                 buffer += chunk
-                
-                # 检测是否进入 thinking 阶段
-                if "<thinking>" in buffer and not in_thinking:
-                    # 清除 <thinking> 标签之前的内容
+                if first_chunk:
+                    yield {"type": "thinking", "content": "正在分析问题并生成 SQL 查询..."}
+                    has_sent_thinking = True
+                    first_chunk = False
                     before_thinking = buffer.split("<thinking>", 1)[0]
                     if before_thinking.strip():
                         continue
                     in_thinking = True
                     buffer = buffer.split("<thinking>", 1)[1]
-                
-                # 处理 thinking 阶段
                 if in_thinking and not in_sql:
                     if "</thinking>" in buffer:
-                        # thinking 结束
                         thinking_part = buffer.split("</thinking>", 1)[0]
                         thinking_content += thinking_part
                         yield {"type": "thinking", "content": thinking_content}
-                        
-                        # 切换到 SQL 阶段
+                        has_sent_thinking = True
                         buffer = buffer.split("</thinking>", 1)[1]
                         in_thinking = False
                         in_sql = True
                     else:
-                        # 继续累积 thinking 内容
                         thinking_content += chunk
                         yield {"type": "thinking", "content": thinking_content}
-                
+                        has_sent_thinking = True
                 # 处理 SQL 阶段
-                if in_sql:
-                    # 直接输出剩余内容（包含 <sql> 标签）
+                if not in_thinking and buffer.strip():
                     sql_content = buffer
                     if "<sql>" in sql_content:
                         sql_content = sql_content.split("<sql>", 1)[1]
                     if "</sql>" in sql_content:
                         sql_content = sql_content.split("</sql>", 1)[0]
-                    
                     yield {"type": "sql", "content": sql_content.strip()}
-                    
         except Exception as e:
             logger.error(f"Thinking + SQL 流式生成失败: {e}")
             yield {"type": "error", "content": str(e)}

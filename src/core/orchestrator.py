@@ -170,7 +170,7 @@ class NL2SQLOrchestrator:
             # 使用 generate_with_thinking_stream 同时获取 thinking 和 SQL
             for item in self.sql_generator.generate_with_thinking_stream(schema_doc, mapping.enhanced_question):
                 item_type = item.get("type")
-                
+                logger.info(f"[DEBUG] orchestrator received item: type={item_type}, content={repr(item.get('content', '')[:50])}...")
                 if item_type == "thinking":
                     # 流式输出 thinking
                     thinking_content = item.get("content", "")
